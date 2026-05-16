@@ -10,95 +10,134 @@
 
         <!--vou usar o mesmo que usei no codigo anterior, para por os simbolos-->
        
-        <link href="https://fonts.googleapis.com/icon?family=material+icons" rel="stylesheet">
-         <title>BeatTube</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+        <title>BeatTube</title>
     </head>
-    <!--vou dividir em 3 partes, a sequencia sera cabecalho, que sera header, sidebar e o central-->
+
+
     <body>
-       <!--cabecalho/header-->
+       <!--CABEÇALHO/HEADER-->
         <header>
             
-            <!--tirei print do logo na imagem de exemplo que o otavio passou no grupo, no lado esquerdo-->
-            <div class="header-content">
-            <div class="logo">
-                <img src="beattube.png" alt="beattube.logo">
+            <!--LOGO DO BEATTUBE-->
+            <div class="header-esquerda">
+                <div class="logo">
+                    <img src="beattube_logo.png" height="50px">
+                    <p>Beat<span>Tube</span></p>
+                </div>
             </div>
 
-            <!--pesquisar, no meio-->
-            <div class="pesquisar">
+
+            <!--CABEÇALHO CENTRAL, BARRA DE PESQUISA-->
+            <div class="header-centro">
                 <input type="text" placeholder="clique para pesquisar">
-            <span class="material-icons" aria-label="pesquisar">search</span>
+                <button class="pesquisa-btn">
+                    <span class="material-symbols-outlined">search</span>
+                </button> 
             </div>
 
-            <!--aquele login lá do lado direito, usei um printda tela-->
 
-            <div class="login">
-            <img src="login.png" alt="login">
-            </div>
+            <!--BOTÃO DE LOGIN-->
+                <div class="header-direita">
+                    <button class ="login-btn">Login</button>
+                </div>
             </div>
        </header>
 
        
-       <!--vou fazer agora o sidebar, aquela barra lateral-->
-
+       <!--BARRA LATERAL-->
        <nav class="sidebar">
+
         <div class="lateral">
-        <p class="label">paginas</p>
-            <a href="#"><span class="material-icons" aria-label="principal">home</span></a>
-            <a href="#"><span class="material-icons" aria-label="tendencias">trending_up</span></a>
+        <p>PÁGINAS</p>
+            <a href="#">
+                <span class="material-symbols-outlined" aria-label="principal">home</span>Principal
+            </a>
+            <a href="#">
+                <span class="material-symbols-outlined" aria-label="tendencias">trending_up</span>Tendências
+            </a>
            </div>
 
             <div class="lateral">
-                <p class="label">biblioteca</p>
-                <a href="#"><span class="material-icons" aria-label="historico">history</span></a>
-                <a href="#"><span class="material-icons" aria-label="playlist">playlist_play</span></a>
-                <a href="#"><span class="material-icons" aria-label="seguindo">group</span></a>
+                <p>BIBLIOTECA</p>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="historico">history</span>Histórico
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined"="playlist">playlist_play</span>Playlists
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="seguindo">group</span>Seguindo
+                </a>
             </div>
 
-                <div class="lateral">
-                    <p class="label">usuario</p>
-                   <a href="#"><span class="material-icons" aria-label="configurações">settings</span></a>
-                   <a href="#"><span class="material-icons" aria-label="seus planos">monetization_on</span></a>
-                    <a href="#"><span class="material-icons" aria-label="torne-se um criador">star</span></a>
-                    <a href="#"><span class="material-icons" aria-label="sair">logout</span></a>
-                </div>
-                </nav>
+        
+            <div class="lateral">
+                <p>USUÁRIO</p>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="configurações">settings</span>Configurações
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="seus planos">monetization_on</span>Seus planos
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="torne-se um criador">star</span>Torne-se um criador
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined" aria-label="sair">logout</span>Sair
+                </a>
+            </div>
+        </nav>
 
                 <!--só coloquei # no lugar pq ainda nao sei as outras telas que cada botao vai enviar-->
 
-                <main>
-       <!--vou criar um aqui so pro banner em cima-->
-       <div class="banner">
-        <div class="overlay">
-            <span class="tag">#1 mais ouvida</span>
 
-            <h3>nome da musica</h3>
-            <p>nome da banda</p>
-        </div>
-        </div>
-        <!--esse daqui pro "ouvir novamente"-->
-       
-        <div class="ouvir">
-        <span class="index">01</span>
-        <img class="cover" src="capa.jpeg" alt="capa">
-        <div class="info">
-            <h3>Nome da musica</h3>
-            <p>Artista</p>
-        </div>
-        </div>
+
+                        <!--CONTEÚDO PRINCIPAL-->
+        <main>
+                <!--vou criar um aqui so pro banner em cima-->
+            <section class="banner">
+            <a href="#" class="card">
+                  <img src="banner.jpg" alt="banner da música">
+                <div class="overlay">
+                    <span class="tag">#1 mais ouvida</span>
+
+                    <h3>nome da musica</h3>
+                    <p>nome da banda</p>
+                </div>
+            </a>
+            </section>
+            
+            <!--esse daqui pro "ouvir novamente"-->
+            <section class="secao">
+                <h2>Ouvir novamente</h2>
+                <div class="ouvir_novamente">
+                    
+                    <div class="musica"> <!--musica de exemplo 1-->
+                        <img class="capa" src="capa.jpeg" alt="capa" height="130px">
+                        <div class="info">
+                            <p class="nome_musica">Nome da musica</p>
+                            <p class="nome_artista">Artista</p>
+                        </div>
+                    </div>
+
+                    <div class="musica"> <!--musica de exemplo 2-->
+                        <img class="capa" src="capa.jpeg" alt="capa" height="130px">
+                        <div class="info">
+                            <p class="nome_musica">Nome da musica</p>
+                            <p class="nome_artista">Artista</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
 
             <!--agora vou fazer do recomendacoes-->
-
-        <div class="recomendacoes">
-            <span class="index">01</span>
-            <img class="cover" src="capa.jpeg" alt="capa">
-            <div class="info-musica">
-                <h3>nome do artista</h3>
-                <p>nome do artista</p>
-            </div>
-        </div>
+            <section class="recomendados">
+                
+            </section>
         </main>
-      </body>
+    </body>
 </html>
 
 <!--nesse daqui não usei framework, só correção e ajuste de erros no codigo com GPT-->
