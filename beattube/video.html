@@ -1,0 +1,97 @@
+<!--AGORA HTML QUANDO CLICAR em uma musica-->
+
+<!--vou reusar uma parte do coigo-->
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="style2.css">
+         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+         <title>BeatTube - albuns</title>
+
+         </head>
+    <!--vou dividir em 3 partes, a sequencia sera cabecalho, que sera header, sidebar e o central-->
+    <body>
+       <!--cabecalho/header-->
+        <header>
+            
+            <!--LOGO DO BEATTUBE-->
+            <div class="header-esquerda">
+                <div class="logo">
+                    <img src="beattube_logo.png" height="50px">
+                    <p>Beat<span>Tube</span></p>
+                </div>
+            </div>
+            <!--CABEÇALHO CENTRAL, BARRA DE PESQUISA-->
+            <div class="header-centro">
+                <input type="text" placeholder="clique para pesquisar">
+                <button class="pesquisa-btn">
+                    <span class="material-symbols-outlined">search</span>
+                </button> 
+            </div>
+            <!--BOTÃO DE LOGIN-->
+                <div class="header-direita">
+                    <button class ="login-btn">Login</button>
+            </div>
+       </header>
+
+        <!--sidebar-->
+
+        <nav class="sidebar">
+
+        <div class="lateral">
+        <p>PÁGINAS</p>
+            <a href="#"><span class="material-symbols-outlined" aria-label="principal">home</span>Principal</a>
+            
+            <a href="#"><span class="material-symbols-outlined" aria-label="tendencias">trending_up</span>Tendências</a>
+           
+        </div>
+
+            <div class="lateral">
+                <p>BIBLIOTECA</p>
+                <a href="#"><span class="material-symbols-outlined">history</span>Histórico</a>
+                
+                <a href="#"><span class="material-symbols-outlined" aria-label="playlist">playlist_play</span>Playlists</a>
+                
+                <a href="#"><span class="material-symbols-outlined" aria-label="seguindo">group</span>Seguindo</a>
+            </div>
+
+        
+            <div class="lateral">
+                <p>USUÁRIO</p>
+                <a href="#"><span class="material-symbols-outlined" aria-label="configurações">settings</span>Configurações</a>
+               
+                <a href="#"><span class="material-symbols-outlined" aria-label="seus planos">monetization_on</span>Seus planos</a>
+                
+                <a href="#"><span class="material-symbols-outlined" aria-label="torne-se um criador">star</span>Torne-se um criador</a>
+                
+                <a href="#"><span class="material-symbols-outlined" aria-label="sair">logout</span>Sair
+                </a>
+            </div>
+        </nav>
+                <!--agr sim vou fazer algo novo e vai ser reformular essa parte central-->   
+                <main>
+                    <section class="principal">
+                        <article class="parte-cima">
+                            <img src="bruno.jpeg" alt="avatar" height="200" width="200">
+                            <h3>NOME DA MUSICA - ALBUM</h3>
+                            <p>NOME DO ARTISTA</p>
+                            <p>999.999.998 visualizações</p>
+                        </article>
+                    </section>
+                   
+                     <section class="principal-baixo">
+                        <article class="musica">
+                            <a href="#">
+                            <img src="bruno.jpeg" alt="capa-musica" height="50" width="50">
+                            <h4>nome da musica</h4>
+                            <p>cantor/banda</p>
+                            <p>nome do album/single</p>
+                            <h5>6:07</h5>
+                            </a>
+                        </article>
+                     </section>
+                </main>
+                </body>
+                </html>
