@@ -190,11 +190,190 @@ a:visited {
   color: #B3B3B3;
 }
 
-/* CONTEÚDO PRINCIPAL */
+/* MAIN */
 main {
   margin-left: 210px;
-  margin-top: 50px;
-
+  margin-top: 70px;
 
   padding: 20px;
+}
+
+/* TOPO DO ÁLBUM */
+.principal {
+  margin-bottom: 30px;
+}
+
+.parte-cima {
+  display: flex;
+  align-items: end;
+
+  gap: 30px;
+
+  padding: 30px;
+
+  border-radius: 25px;
+
+  background: linear-gradient(
+    to bottom,
+    #ff6600,
+    #070200 90%
+  );
+}
+
+.album-cover {
+  width: 220px;
+  height: 220px;
+
+  object-fit: cover;
+
+  border-radius: 20px;
+
+  user-select: none;
+}
+
+.album-info {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: end;
+}
+
+.tipo {
+  color: white;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  margin-bottom: 10px;
+}
+
+.album-titulo {
+  color: white;
+
+  font-size: 3.3rem;
+  font-weight: 700;
+
+  margin: 0;
+}
+
+.album-artista {
+  color: white;
+
+  font-size: 1.4rem;
+  font-weight: 500;
+
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.views {
+  color: #d1d1d1;
+
+  margin: 0;
+}
+
+/* LISTA */
+.principal-baixo {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+/* CARD MUSICA */
+.musica-link {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 10px 15px;
+
+  border-radius: 18px;
+
+  background-color: #120805;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+
+}
+
+.musica-link:hover {
+  background-color: #1d0c06;
+
+  transform: scale(1.01);
+}
+
+/* CAPA */
+.mini-capa {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 12px;
+
+  object-fit: cover;
+
+  user-select: none;
+}
+
+/* INFO */
+.musica-info {
+  width: 260px;
+}
+
+.musica-titulo {
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  margin: 0 0 4px 0;
+}
+
+.musica-artista {
+  color: #B3B3B3;
+
+  margin: 0;
+}
+
+/* ALBUM */
+.musica-album {
+  width: 250px;
+
+  color: #d1d1d1;
+}
+
+/* TEMPO */
+.musica-tempo {
+  color: white;
+
+  margin-left: auto;
+
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* OPÇÕES */
+.musica-opcoes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+
+  color: #B3B3B3;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.musica-opcoes:hover {
+  color: white;
+
+  transform: scale(1.08);
 }
