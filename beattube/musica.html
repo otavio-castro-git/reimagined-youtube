@@ -1,18 +1,21 @@
 <!--AGORA HTML QUANDO CLICAR em uma musica-->
 
-<!--vou reusar uma parte do coigo-->
 <!doctype html>
 <html lang="pt-br">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="style2.css">
-         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-         <title>BeatTube - albuns</title>
 
-         </head>
-    <!--vou dividir em 3 partes, a sequencia sera cabecalho, que sera header, sidebar e o central-->
-    <body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="style2.css">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    <title>BeatTube - albuns</title>
+</head>
+
+<body>
 
     <!-- CABEÇALHO -->
     <header>
@@ -20,23 +23,33 @@
         <!-- LOGO -->
         <div class="header-esquerda">
             <div class="logo">
-                <img src="beattube_logo.png" height="50px" draggable="false">
+                <img src="beattube_logo.png"
+                    height="50px"
+                    draggable="false">
+
                 <p>Beat<span>Tube</span></p>
             </div>
         </div>
 
         <!-- PESQUISA -->
         <div class="header-centro">
-            <input type="text" placeholder="clique para pesquisar">
+
+            <input type="text"
+                placeholder="clique para pesquisar">
 
             <button class="pesquisa-btn">
-                <span class="material-symbols-outlined">search</span>
+                <span class="material-symbols-outlined">
+                    search
+                </span>
             </button>
+
         </div>
 
         <!-- LOGIN -->
         <div class="header-direita">
-            <button class="login-btn">Login</button>
+            <button class="login-btn">
+                Login
+            </button>
         </div>
 
     </header>
@@ -49,12 +62,18 @@
             <p>PÁGINAS</p>
 
             <a href="beattube.html" class="ativo">
-                <span class="material-symbols-outlined">home</span>
+                <span class="material-symbols-outlined">
+                    home
+                </span>
+
                 Principal
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">trending_up</span>
+                <span class="material-symbols-outlined">
+                    trending_up
+                </span>
+
                 Tendências
             </a>
 
@@ -65,17 +84,26 @@
             <p>BIBLIOTECA</p>
 
             <a href="#">
-                <span class="material-symbols-outlined">history</span>
+                <span class="material-symbols-outlined">
+                    history
+                </span>
+
                 Histórico
             </a>
 
-            <a href="#">
-                <span class="material-symbols-outlined">playlist_play</span>
+            <a href="playlist.html">
+                <span class="material-symbols-outlined">
+                    playlist_play
+                </span>
+
                 Playlists
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">group</span>
+                <span class="material-symbols-outlined">
+                    group
+                </span>
+
                 Seguindo
             </a>
 
@@ -86,50 +114,172 @@
             <p>USUÁRIO</p>
 
             <a href="#">
-                <span class="material-symbols-outlined">settings</span>
+                <span class="material-symbols-outlined">
+                    settings
+                </span>
+
                 Configurações
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">monetization_on</span>
+                <span class="material-symbols-outlined">
+                    monetization_on
+                </span>
+
                 Seus planos
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">star</span>
+                <span class="material-symbols-outlined">
+                    star
+                </span>
+
                 Torne-se um criador
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">logout</span>
+                <span class="material-symbols-outlined">
+                    logout
+                </span>
+
                 Sair
             </a>
 
         </div>
 
     </nav>
-                <!--agr sim vou fazer algo novo e vai ser reformular essa parte central-->   
-                <main>
-                    <section class="principal">
-                        <article class="parte-cima">
-                            <img src="bruno.jpeg" alt="avatar" height="200" width="200">
-                            <h3>NOME DA MUSICA - ALBUM</h3>
-                            <p>NOME DO ARTISTA</p>
-                            <p>999.999.998 visualizações</p>
-                        </article>
-                    </section>
-                   
-                     <section class="principal-baixo">
-                        <article class="musica">
-                            <a href="#">
-                            <img src="bruno.jpeg" alt="capa-musica" height="50" width="50">
-                            <h4>nome da musica</h4>
-                            <p>cantor/banda</p>
-                            <p>nome do album/single</p>
-                            <h5>6:07</h5>
-                            </a>
-                        </article>
-                     </section>
-                </main>
-                </body>
-                </html>
+
+    <!-- CONTEÚDO -->
+    <!-- CONTEÚDO -->
+<main>
+
+    <!-- TOPO DO ÁLBUM -->
+    <section class="principal">
+
+        <article class="parte-cima">
+
+            <img src="banner.jpg"
+                alt="avatar"
+                class="album-cover"
+                draggable="false">
+
+            <div class="album-info">
+
+                <p class="tipo">
+                    ÁLBUM
+                </p>
+
+                <h1 class="album-titulo">
+                    NOME DA MUSICA - ALBUM
+                </h1>
+
+                <h2 class="album-artista">
+                    NOME DO ARTISTA
+                </h2>
+
+                <p class="views">
+                    999.999.998 visualizações
+                </p>
+
+            </div>
+
+        </article>
+
+    </section>
+
+    <!-- LISTA DE MUSICAS -->
+    <section class="principal-baixo">
+
+        <!-- MÚSICA 1 -->
+        <article class="musica">
+
+            <a href="#"
+               class="musica-link">
+
+                <img src="banner.jpg"
+                    alt="capa-musica"
+                    class="mini-capa"
+                    draggable="false">
+
+                <div class="musica-info">
+
+                    <h4 class="musica-titulo">
+                        nome da musica
+                    </h4>
+
+                    <p class="musica-artista">
+                        cantor/banda
+                    </p>
+
+                </div>
+
+                <p class="musica-album">
+                    nome do album/single
+                </p>
+
+                <h5 class="musica-tempo">
+                    6:07
+                </h5>
+
+                <button class="musica-opcoes">
+
+                    <span class="material-symbols-outlined">
+                        more_horiz
+                    </span>
+
+                </button>
+
+            </a>
+
+        </article>
+
+        <!-- MÚSICA 2 -->
+        <article class="musica">
+
+            <a href="#"
+               class="musica-link">
+
+                <img src="banner.jpg"
+                    alt="capa-musica"
+                    class="mini-capa"
+                    draggable="false">
+
+                <div class="musica-info">
+
+                    <h4 class="musica-titulo">
+                        nome da musica
+                    </h4>
+
+                    <p class="musica-artista">
+                        cantor/banda
+                    </p>
+
+                </div>
+
+                <p class="musica-album">
+                    nome do album/single
+                </p>
+
+                <h5 class="musica-tempo">
+                    6:07
+                </h5>
+
+                <button class="musica-opcoes">
+
+                    <span class="material-symbols-outlined">
+                        more_horiz
+                    </span>
+
+                </button>
+
+            </a>
+
+        </article>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>
