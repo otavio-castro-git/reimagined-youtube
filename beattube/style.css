@@ -30,7 +30,6 @@ header {
 .header-esquerda {
   display: flex;
   align-items: center;
-
 }
 
 .logo {
@@ -45,7 +44,7 @@ header {
   color: white;
   font-size: 1.4rem;
   font-weight: 600;
-  }
+}
 
 .logo span {
   color: #ff6600;
@@ -150,7 +149,6 @@ header {
 
   font-size: 1.2rem;
   font-weight: 600;
-
 }
 
 .sidebar a {
@@ -178,7 +176,7 @@ header {
 }
 
 .sidebar a.ativo {
-  color:#f66000; 
+  color: #f66000;
 }
 
 .sidebar a:hover {
@@ -186,12 +184,10 @@ header {
   color: white;
 }
 
-
 /* CONTEÚDO PRINCIPAL */
 main {
   margin-left: 210px;
   margin-top: 50px;
-
 
   padding: 20px;
 }
@@ -222,7 +218,7 @@ main {
   position: absolute;
   inset: 0;
 
-  background-color: rgba(255,255,255,0);
+  background-color: rgba(255, 255, 255, 0);
 
   transition: 0.3s;
 
@@ -230,7 +226,7 @@ main {
 }
 
 .card:hover::before {
-  background-color: rgba(255,255,255,0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .card img {
@@ -243,11 +239,9 @@ main {
   transition: 0.4s;
 }
 
-.card:hover img{
+.card:hover img {
   transform: scale(1.1);
 }
-
-
 
 .overlay {
   position: absolute;
@@ -255,8 +249,8 @@ main {
 
   background: linear-gradient(
     to top,
-    rgba(0,0,0,0.8),
-    rgba(0,0,0,0.2)
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0.2)
   );
 
   display: flex;
@@ -294,24 +288,18 @@ main {
 }
 
 /* OUVIR NOVAMENTE */
-.secao h2{
+.secao h2 {
   color: white;
 }
 
-.secao h2 span{
+.secao h2 span {
   color: #ff6600;
 }
 
 .ouvir_novamente {
   display: grid;
-
-  grid-template-columns: repeat(7, 1fr);
-
-  justify-content: start;
-
-  gap: 10px;
-
-  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
 }
 
 .musica {
@@ -327,7 +315,7 @@ main {
   border-radius: 16px;
   text-decoration: none;
   color: white;
-   transition: 0.2s;
+  transition: 0.2s;
 }
 
 .musica:hover {
@@ -335,7 +323,7 @@ main {
 
   transform: translateY(-3px);
 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 
   cursor: pointer;
 }
@@ -357,10 +345,194 @@ main {
   margin-bottom: 2px;
   margin-top: 5px;
   font-size: 1.2rem;
- font-weight: bold;
+  font-weight: bold;
 }
 
 .nome_artista {
   margin-top: 1px;
   text-align: center;
+}
+
+/* =====================
+   MODAL
+   ===================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+
+  display: none; /* começa escondido */
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+.modal {
+  background-color: #111111;
+  border: 1px solid #2a2a2a;
+  border-radius: 18px;
+
+  width: 360px;
+
+  padding: 32px 28px 28px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  color: white;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 102, 0, 0.08);
+}
+
+/* Logo dentro do modal */
+.logo-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  height: auto;
+  user-select: none;
+}
+
+.logo-modal p {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.logo-modal span {
+  color: #ff6600;
+  padding: 2px;
+}
+
+/* Título Login */
+.modal-title {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ff6600;
+  margin: 0 0 24px 0;
+}
+
+/* Campos */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: #cccccc;
+  font-weight: 500;
+}
+
+.modal input {
+  background: #1a1a1a;
+  border: 2px solid #ff6600;
+  border-radius: 10px;
+
+  padding: 12px 14px;
+
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal input:focus {
+  border-color: #ff8833;
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.18);
+}
+
+.modal input::placeholder {
+  color: #555;
+}
+
+/* Botão entrar */
+.entrar-btn {
+  background: #ff6600;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 13px;
+  margin-top: 6px;
+
+  width: 100%;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.entrar-btn:hover {
+  background: #ff7a1a;
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(255, 102, 0, 0.35);
+}
+
+.entrar-btn:active {
+  transform: scale(0.98);
+}
+
+/* Link cadastro */
+.cadastro-link {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+
+.cadastro-link a {
+  color: #ff6600;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.cadastro-link a:hover {
+  color: #ff8833;
+  text-decoration: underline;
+}
+
+.fechar-btn {
+  background: transparent;
+
+  border: 1px solid #444;
+  color: white;
+
+  padding: 10px;
+  margin-top: 4px;
+
+  width: 100%;
+
+  border-radius: 10px;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.fechar-btn:hover {
+  background: #222;
 }
