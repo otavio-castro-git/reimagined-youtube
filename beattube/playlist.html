@@ -3,61 +3,95 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="style3.css">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <!--icones-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
- 
+    <link rel="stylesheet"
+          type="text/css"
+          href="style3.css">
+
+    <!-- ÍCONES -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
     <title>BeatTube</title>
 </head>
 
 <body>
-
-     <body>
 
     <!-- CABEÇALHO -->
     <header>
 
         <!-- LOGO -->
         <div class="header-esquerda">
+
             <div class="logo">
-                <img src="logo.png" height="50px" draggable="false">
-                <p>Beat<span>Tube</span></p>
+
+                <img src="beattube_logo.png"
+                     height="50px"
+                     draggable="false">
+
+                <p>
+                    Beat<span>Tube</span>
+                </p>
+
             </div>
+
         </div>
 
         <!-- PESQUISA -->
         <div class="header-centro">
-            <input type="text" placeholder="clique para pesquisar">
+
+            <input type="text"
+                   placeholder="clique para pesquisar">
 
             <button class="pesquisa-btn">
-                <span class="material-symbols-outlined">search</span>
+
+                <span class="material-symbols-outlined">
+                    search
+                </span>
+
             </button>
+
         </div>
 
         <!-- LOGIN -->
         <div class="header-direita">
-            <button class="login-btn">Login</button>
+
+            <button class="login-btn">
+                Login
+            </button>
+
         </div>
 
     </header>
 
+    <!-- SIDEBAR -->
     <nav class="sidebar">
 
         <div class="lateral">
 
             <p>PÁGINAS</p>
 
-            <a href="beattube.html" class="ativo">
-                <span class="material-symbols-outlined">home</span>
+            <a href="beattube.html">
+
+                <span class="material-symbols-outlined">
+                    home
+                </span>
+
                 Principal
+
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">trending_up</span>
+
+                <span class="material-symbols-outlined">
+                    trending_up
+                </span>
+
                 Tendências
+
             </a>
 
         </div>
@@ -67,18 +101,34 @@
             <p>BIBLIOTECA</p>
 
             <a href="#">
-                <span class="material-symbols-outlined">history</span>
+
+                <span class="material-symbols-outlined">
+                    history
+                </span>
+
                 Histórico
+
             </a>
 
-            <a href="#">
-                <span class="material-symbols-outlined">playlist_play</span>
+            <a href="playlist.html"
+               class="ativo">
+
+                <span class="material-symbols-outlined">
+                    playlist_play
+                </span>
+
                 Playlists
+
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">group</span>
+
+                <span class="material-symbols-outlined">
+                    group
+                </span>
+
                 Seguindo
+
             </a>
 
         </div>
@@ -88,43 +138,138 @@
             <p>USUÁRIO</p>
 
             <a href="#">
-                <span class="material-symbols-outlined">settings</span>
+
+                <span class="material-symbols-outlined">
+                    settings
+                </span>
+
                 Configurações
+
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">monetization_on</span>
+
+                <span class="material-symbols-outlined">
+                    monetization_on
+                </span>
+
                 Seus planos
+
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">star</span>
+
+                <span class="material-symbols-outlined">
+                    star
+                </span>
+
                 Torne-se um criador
+
             </a>
 
             <a href="#">
-                <span class="material-symbols-outlined">logout</span>
+
+                <span class="material-symbols-outlined">
+                    logout
+                </span>
+
                 Sair
+
             </a>
 
         </div>
 
     </nav>
 
+    <!-- CONTEÚDO -->
     <main>
-        
-        <section class="secao">
 
-        <img class="capa" src="capa_playlist.jpeg" alt="capa" height="130px">
-         </div>
+        <section class="playlists">
 
-         <div class="info">
-            <p class="nome_playlist">Nome da playlist</p>
-            <p>134 musicas</p>
-         </div>
+            <h1>
+                Playlists
+            </h1>
+
+            <!-- GRID -->
+            <div class="playlist-grid">
+
+                <!-- PLAYLIST -->
+                <a href="musica.html"
+                   class="playlist-card">
+
+                    <img class="capa"
+                         src="playlist1.jpg"
+                         alt="capa"
+                         draggable="false">
+
+                    <div class="info">
+
+                        <p class="nome_playlist">
+                            Nome da playlist
+                        </p>
+
+                        <p class="quantidade">
+                            134 músicas
+                        </p>
+
+                    </div>
+
+                </a>
+
+                <!-- PLAYLIST -->
+                <a href="musica.html"
+                   class="playlist-card">
+
+                    <img class="capa"
+                         src="playlist2.jpg"
+                         alt="capa"
+                         draggable="false">
+
+                    <div class="info">
+
+                        <p class="nome_playlist">
+                            Nome da playlist
+                        </p>
+
+                        <p class="quantidade">
+                            67 músicas
+                        </p>
+
+                    </div>
+
+                </a>
+
+                <!-- PLAYLIST -->
+                <a href="musica.html"
+                   class="playlist-card">
+
+                    <img class="capa"
+                         src="banner.jpg"
+                         alt="capa"
+                         draggable="false">
+
+                    <div class="info">
+
+                        <p class="nome_playlist">
+                            Nome da playlist
+                        </p>
+
+                        <p class="quantidade">
+                            52 músicas
+                        </p>
+
+                    </div>
+
+                </a>
+
+                
+
+            </div>
 
         </section>
+
     </main>
-    </body>
-    </html>
-    
+
+</body>
+
+</html>
