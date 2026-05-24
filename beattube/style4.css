@@ -1,0 +1,61 @@
+html, body {
+  background-color: #070200;
+  font-family: 'Poppins', sans-serif;
+  color: #B3B3B3;
+  margin: 0;
+}
+
+.secao h2 {
+  color: white;
+}
+
+.secao h2 span {
+  color: #ff6600;
+}
+
+.nome_musica {
+  margin-bottom: 2px;
+  margin-top: 5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.nome_artista {
+  margin-top: 1px;
+  text-align: center;
+}
+
+.artista1 {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.artista {
+  width: 160px;
+  height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 10px;
+
+  border-radius: 16px;
+  text-decoration: none;
+  color: white;
+   transition: 0.2s;
+}
+
+.ouvir_novamente {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+main {
+  margin-left: 2px;
+
+  padding: 10px;
+}

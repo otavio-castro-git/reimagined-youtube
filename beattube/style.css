@@ -536,3 +536,65 @@ main {
 .fechar-btn:hover {
   background: #222;
 }
+
+.artista1 {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.artista {
+  width: 160px;
+  height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 10px;
+
+  border-radius: 16px;
+  text-decoration: none;
+  color: white;
+   transition: 0.2s;
+}
+
+.album {
+  width: 160px;
+  height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 10px;
+
+  border-radius: 16px;
+  text-decoration: none;
+  color: white;
+  transition: 0.2s;
+}
+
+.album:hover {
+  background-color: #1a1a1a;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+
+  cursor: pointer;
+}
+
+.capaA {
+  width: 160px;
+  height: 140px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+.album p {
+  margin-bottom: 0;
+}
