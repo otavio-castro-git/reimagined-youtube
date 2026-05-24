@@ -13,14 +13,14 @@ html, body {
   color: #ff6600;
 }
 
-.nome_musica {
+.nome_artista {
   margin-bottom: 2px;
   margin-top: 5px;
   font-size: 1.2rem;
   font-weight: bold;
 }
 
-.nome_artista {
+.views {
   margin-top: 1px;
   text-align: center;
 }
