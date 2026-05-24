@@ -4,7 +4,7 @@ Otavio Martins,
 Rafael Leite da Silva Francisco, 
 Miguel Isaias Ledesma Araujo, 
 Murilo Santos Barbosa,
-Pedro henrique da Silva Bernado.
+Pedro henrique da Silva Bernardo.
 
 Professora, boa noite, tudo bem? então, abrir o projeto na sua maquina talvez nn seja tão facil, então deixei aqui um mini tutorial que eu acho necessario,
 
