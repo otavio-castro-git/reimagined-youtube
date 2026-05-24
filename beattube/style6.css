@@ -1,0 +1,292 @@
+html, body {
+  background-color: #070200;
+  font-family: 'Poppins', sans-serif;
+  color: #B3B3B3;
+  margin: 0;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+
+  background-color: #070200;
+  border-bottom: 2px solid #B3B3B3;
+
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* LADO ESQUERDO */
+.header-esquerda {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 10px;
+}
+
+.logo p {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.logo span {
+  color: #ff6600;
+  padding: 2px;
+}
+
+/* CENTRO */
+.header-centro {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-centro input {
+  width: 200px;
+
+  padding: 10px 15px;
+
+  border-radius: 20px;
+  border: none;
+
+  background-color: transparent;
+  color: white;
+
+  outline: none;
+  text-align: center;
+
+  transition: 0.2s;
+}
+
+.header-centro input:hover {
+  transform: scale(1.01);
+}
+
+.pesquisa-btn {
+  color: #B3B3B3;
+
+  background: none;
+  border: none;
+
+  cursor: pointer;
+
+  border-radius: 50%;
+
+  transition: 0.2s;
+}
+
+.pesquisa-btn:hover {
+  transform: scale(1.05);
+}
+
+/* DIREITA */
+.header-direita {
+  display: flex;
+  align-items: center;
+}
+
+.login-btn {
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 20px;
+
+  background-color: #ff6600;
+  color: white;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.login-btn:hover {
+  transform: scale(1.05);
+}
+
+/* BARRA LATERAL */
+.sidebar {
+  position: fixed;
+
+  top: 70px;
+  left: 0;
+
+  width: 200px;
+  height: 100vh;
+
+  border-right: 2px solid #B3B3B3;
+
+  padding-right: 10px;
+}
+
+.lateral {
+  flex-direction: column;
+  margin-bottom: 25px;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.sidebar p {
+  color: white;
+
+  font-size: 1.2rem;
+  font-weight: 600;
+
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  width: 90%;
+
+  padding: 12px 16px;
+
+  margin-left: 0px;
+  padding-left: 5px;
+
+  border-radius: 14px;
+
+  font-size: 1.1rem;
+  font-weight: 500;
+
+  text-decoration: none;
+  color: #B3B3B3;
+
+  transition: 0.2s;
+}
+
+.sidebar a.ativo {
+  color:#f66000; 
+}
+
+.sidebar a:hover {
+  background-color: #3f150559;
+  color: white;
+}
+
+a:visited {
+  color: #B3B3B3;
+}
+/* ===================== CONTEÚDO PRINCIPAL ===================== */
+main {
+  margin-left: 210px;
+  margin-top: 70px;
+
+  padding: 20px 24px;
+}
+
+/* ===================== SEÇÃO ARTISTA ===================== */
+.artista {
+  margin-bottom: 30px;
+}
+
+.artista h2 {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 14px 0;
+}
+
+.artista h2 span {
+  color: #ff6600;
+}
+
+/* ===================== SEGUINDO HEADER ===================== */
+.seguindo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.seguindo-header h2 {
+  margin: 0;
+}
+
+.ver-tudo {
+  color: #B3B3B3;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.ver-tudo:hover {
+  color: #ff6600;
+}
+
+/* ===================== GRID DE MÚSICAS ===================== */
+.ouvir_novamente {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  justify-content: start;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+.musica {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.musica:hover {
+  transform: scale(1.04);
+}
+
+.musica img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Capas redondas para a seção "Seguindo" */
+.musica img.capa-redonda {
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  outline-offset: 2px;
+}
+
+.musica p {
+  margin: 0;
+  text-align: center;
+}
+
+.nome_musica {
+  margin-top: 8px !important;
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.nome_artista {
+  margin-top: 2px !important;
+  color: #B3B3B3;
+  font-size: 0.78rem;
+}
