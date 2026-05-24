@@ -249,6 +249,114 @@
         </section>
 
     </main>
+    <!-- MODAL LOGIN -->
+    <div class="modal-overlay" id="modalLogin">
+        <div class="modal">
+
+            <div class="logo-modal">
+                <img src="beattube_logo.png" height="34px" draggable="false">
+                <p>Beat<span>Tube</span></p>
+            </div>
+
+            <p class="modal-title">Login</p>
+
+            <div class="field">
+                <label for="user">Email</label>
+                <input type="text" id="user" placeholder="seu@email.com">
+            </div>
+
+            <div class="field">
+                <label for="pass">Senha</label>
+                <input type="password" id="pass" placeholder="••••••••">
+            </div>
+
+            <button class="entrar-btn">Login</button>
+
+            <button class="fechar-btn" id="fecharModalLogin">Cancelar</button>
+
+            <p class="cadastro-link">Não tem uma conta? <a href="#" id="irParaCadastro">Cadastre-se</a></p>
+
+        </div>
+    </div>
+
+    <!-- MODAL CADASTRO -->
+    <div class="modal-overlay" id="modalCadastro">
+        <div class="modal">
+
+            <div class="logo-modal">
+                <img src="beattube_logo.png" height="34px" draggable="false">
+                <p>Beat<span>Tube</span></p>
+            </div>
+
+            <p class="modal-title">Cadastre-se</p>
+
+            <div class="field">
+                <label for="cadastroEmail">Email</label>
+                <input type="text" id="cadastroEmail" placeholder="seu@email.com">
+            </div>
+
+            <div class="field">
+                <label for="cadastroSenha">Senha</label>
+                <input type="password" id="cadastroSenha" placeholder="••••••••">
+            </div>
+
+            <div class="field">
+                <label for="cadastroRepetir">Repita a senha</label>
+                <input type="password" id="cadastroRepetir" placeholder="••••••••">
+            </div>
+
+            <button class="entrar-btn">Cadastre-se</button>
+
+            <button class="fechar-btn" id="fecharModalCadastro">Cancelar</button>
+
+            <p class="cadastro-link">Já tem uma conta? <a href="#" id="irParaLogin">Login</a></p>
+
+        </div>
+    </div>
+
+    <script>
+        const loginBtn        = document.querySelector(".login-btn");
+        const modalLogin      = document.getElementById("modalLogin");
+        const modalCadastro   = document.getElementById("modalCadastro");
+
+        // Abre modal de login
+        loginBtn.addEventListener("click", () => {
+            modalLogin.style.display = "flex";
+        });
+
+        // Fecha login pelo botão cancelar
+        document.getElementById("fecharModalLogin").addEventListener("click", () => {
+            modalLogin.style.display = "none";
+        });
+
+        // Fecha cadastro pelo botão cancelar
+        document.getElementById("fecharModalCadastro").addEventListener("click", () => {
+            modalCadastro.style.display = "none";
+        });
+
+        // Troca login → cadastro
+        document.getElementById("irParaCadastro").addEventListener("click", (e) => {
+            e.preventDefault();
+            modalLogin.style.display = "none";
+            modalCadastro.style.display = "flex";
+        });
+
+        // Troca cadastro → login
+        document.getElementById("irParaLogin").addEventListener("click", (e) => {
+            e.preventDefault();
+            modalCadastro.style.display = "none";
+            modalLogin.style.display = "flex";
+        });
+
+        // Fecha clicando fora
+        modalLogin.addEventListener("click", (e) => {
+            if (e.target === modalLogin) modalLogin.style.display = "none";
+        });
+
+        modalCadastro.addEventListener("click", (e) => {
+            if (e.target === modalCadastro) modalCadastro.style.display = "none";
+        });
+    </script>
 
 </body>
 
