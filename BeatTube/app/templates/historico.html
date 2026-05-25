@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — Histórico{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/historico_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="historico-header">
+    <h2><span>•</span> Histórico de músicas</h2>
+    <div class="historico-acoes">
+        <button class="apagar-btn" id="btnApagarHistorico">Apagar tudo</button>
+    </div>
+</div>
+
+{% if grouped %}
+    {% for data_label, entries in grouped.items() %}
+    <section class="historico-secao">
+        <h3 class="data-titulo">{{ data_label }}</h3>
+        {% for entry in entries %}
+        <a href="{{ url_for('music.song_detail', song_id=entry.song.id) }}" class="musica-historico">
+            <img src="{{ entry.song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="capa" class="capa-historico">
+            <p class="hist-nome">{{ entry.song.title }}</p>
+            <p class="hist-info">{{ entry.song.main_artist.name if entry.song.main_artist else '—' }}</p>
+            <p class="hist-info">{{ entry.song.main_artist.albums.first().title if entry.song.main_artist and entry.song.main_artist.albums.first() else '—' }}</p>
+            <p class="hist-duracao">{{ entry.song.duration_str }}</p>
+            <button class="mais-btn"><span class="material-symbols-outlined">more_horiz</span></button>
+        </a>
+        {% endfor %}
+    </section>
+    {% endfor %}
+{% else %}
+    <p class="sem-historico">Nenhuma música ouvida ainda. <a href="{{ url_for('home.index') }}">Explorar músicas</a></p>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById("btnApagarHistorico")?.addEventListener("click", async () => {
+    if (!confirm("Apagar todo o histórico?")) return;
+    const r = await fetch("/api/historico/apagar", { method: "POST" });
+    if ((await r.json()).ok) location.reload();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — Playlists{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="playlists-header">
+    <h2><span>•</span> Suas Playlists</h2>
+</div>
+
+<div class="playlists-grid">
+
+    <!-- CARD CRIAR PLAYLIST -->
+    {% if current_user.is_authenticated %}
+    <button class="playlist-card-criar" id="btnCriarPlaylist">
+        <div class="criar-capa-card">
+            <span class="material-symbols-outlined">add</span>
+        </div>
+        <p class="criar-label">Nova playlist</p>
+        <p class="criar-sub">Criar</p>
+    </button>
+    {% endif %}
+
+    <!-- CARDS DE PLAYLISTS EXISTENTES -->
+    {% for pl in playlists %}
+    <a href="{{ url_for('playlist.playlist_detail', playlist_id=pl.id) }}" class="playlist-card">
+        <img src="{{ pl.cover_url or url_for('static', filename='img/playlist1.jpg') }}" alt="{{ pl.name }}" class="playlist-cover">
+        <div class="playlist-info">
+            <p class="playlist-nome">{{ pl.name }}</p>
+            <p class="playlist-qtd">{{ pl.song_count }} músicas</p>
+        </div>
+    </a>
+    {% endfor %}
+
+    {% if not playlists and not current_user.is_authenticated %}
+    <div class="sem-playlists">
+        <span class="material-symbols-outlined">playlist_play</span>
+        <p>Você ainda não tem playlists.</p>
+        <p><a href="#" id="abrirLogin">Faça login</a> para criar playlists.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- MODAL CRIAR PLAYLIST -->
+{% if current_user.is_authenticated %}
+<div class="modal-overlay" id="modalCriarPlaylist" style="display:none">
+    <div class="modal">
+        <p class="modal-title">Nova Playlist</p>
+        <div class="field">
+            <label>Nome</label>
+            <input type="text" id="playlistNome" placeholder="Nome da playlist">
+        </div>
+        <div class="field">
+            <label>Descrição (opcional)</label>
+            <input type="text" id="playlistDesc" placeholder="Descrição">
+        </div>
+        <button class="entrar-btn" id="btnSalvarPlaylist">Criar</button>
+        <button class="fechar-btn" id="fecharModalPlaylist">Cancelar</button>
+        <p id="playlistErro" class="form-erro"></p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const modalPl = document.getElementById("modalCriarPlaylist");
+
+document.getElementById("btnCriarPlaylist")?.addEventListener("click", () => {
+    modalPl.style.display = "flex";
+});
+
+document.getElementById("fecharModalPlaylist")?.addEventListener("click", () => {
+    modalPl.style.display = "none";
+});
+
+modalPl?.addEventListener("click", (e) => {
+    if (e.target === modalPl) modalPl.style.display = "none";
+});
+
+document.getElementById("btnSalvarPlaylist")?.addEventListener("click", async () => {
+    const nome = document.getElementById("playlistNome").value.trim();
+    const desc = document.getElementById("playlistDesc").value.trim();
+    if (!nome) {
+        document.getElementById("playlistErro").textContent = "O nome é obrigatório.";
+        return;
+    }
+    const r = await fetch("/api/playlist/criar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nome, description: desc })
+    });
+    const data = await r.json();
+    if (data.ok) location.reload();
+    else document.getElementById("playlistErro").textContent = data.error || "Erro ao criar playlist.";
+});
+</script>
+{% endblock %}

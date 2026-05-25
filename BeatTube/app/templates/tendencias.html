@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — Tendências{% endblock %}
+
+{% block content %}
+
+<div class="tendencias-header">
+    <h2><span>•</span> {% if query %}Resultados para "{{ query }}"{% else %}Tendências{% endif %}</h2>
+</div>
+
+<!-- MÚSICAS EM ALTA -->
+<section class="secao">
+    <h2><span>•</span> Músicas em alta</h2>
+    <div class="ouvir_novamente">
+        {% for song in songs %}
+        <a href="#" class="musica play-song-btn"
+           data-song-id="{{ song.id }}"
+           data-song-title="{{ song.title }}"
+           data-song-artist="{{ song.main_artist.name if song.main_artist else 'Artista' }}"
+           data-song-cover="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}">
+            <img class="capa" src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" height="130px">
+            <div class="info">
+                <p class="nome_musica">{{ song.title }}</p>
+                <p class="nome_artista">{{ song.main_artist.name if song.main_artist else 'Artista' }}</p>
+            </div>
+        </a>
+        {% else %}
+        <p class="sem-conteudo">Nenhuma música encontrada.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ARTISTAS EM ALTA -->
+<section class="secao">
+    <h2><span>•</span> Artistas em alta</h2>
+    <div class="ouvir_novamente">
+        {% for artist in artists %}
+        <a href="{{ url_for('music.artist_detail', artist_id=artist.id) }}" class="musica">
+            <img class="capa capa-circular" src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}" alt="{{ artist.name }}" height="130px">
+            <div class="info">
+                <p class="nome_musica">{{ artist.name }}</p>
+                <p class="nome_artista">Artista</p>
+            </div>
+        </a>
+        {% else %}
+        <p class="sem-conteudo">Nenhum artista encontrado.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ÁLBUNS EM ALTA -->
+<section class="secao">
+    <h2><span>•</span> Álbuns em alta</h2>
+    <div class="ouvir_novamente">
+        {% for album in albums %}
+        <a href="{{ url_for('music.album_detail', album_id=album.id) }}" class="musica">
+            <img class="capa" src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ album.title }}" height="130px">
+            <div class="info">
+                <p class="nome_musica">{{ album.title }}</p>
+                <p class="nome_artista">{{ album.artist.name if album.artist else 'Artista' }}</p>
+            </div>
+        </a>
+        {% else %}
+        <p class="sem-conteudo">Nenhum álbum encontrado.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

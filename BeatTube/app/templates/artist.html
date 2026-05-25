@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — {{ artist.name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO DO ARTISTA -->
+<div class="artist-hero" style="background-image: url('{{ artist.banner_url or url_for('static', filename='img/banner.jpg') }}')">
+    <div class="artist-hero-overlay">
+        <img src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}" alt="{{ artist.name }}" class="artist-avatar">
+        <div class="artist-hero-info">
+            <span class="artist-badge">Artista verificado</span>
+            <h1>{{ artist.name }}</h1>
+            <p class="artist-seguidores">{{ artist.follower_count or 0 }} seguidores</p>
+        </div>
+    </div>
+</div>
+
+<div class="artist-body">
+
+    <!-- MÚSICAS POPULARES -->
+    {% if popular_songs %}
+    <section class="secao">
+        <h2><span>•</span> Populares</h2>
+        <div class="lista-musicas">
+            {% for i, song in popular_songs %}
+            <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica-linha">
+                <span class="musica-num">{{ i }}</span>
+                <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" class="musica-linha-capa">
+                <div class="info">
+                    <p class="nome_musica">{{ song.title }}</p>
+                </div>
+                <span class="musica-duracao">{{ song.duration_str }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ÁLBUNS -->
+    {% if albums %}
+    <section class="secao">
+        <h2><span>•</span> Álbuns</h2>
+        <div class="ouvir_novamente">
+            {% for album in albums %}
+            <a href="{{ url_for('music.album_detail', album_id=album.id) }}" class="musica">
+                <img class="capa" src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ album.title }}" height="130px">
+                <div class="info">
+                    <p class="nome_musica">{{ album.title }}</p>
+                    <p class="nome_artista">{{ album.release_year or '' }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- SINGLES -->
+    {% if singles %}
+    <section class="secao">
+        <h2><span>•</span> Singles</h2>
+        <div class="ouvir_novamente">
+            {% for song in singles %}
+            <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica">
+                <img class="capa" src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" height="130px">
+                <div class="info">
+                    <p class="nome_musica">{{ song.title }}</p>
+                    <p class="nome_artista">{{ song.release_year or '' }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+
+{% endblock %}

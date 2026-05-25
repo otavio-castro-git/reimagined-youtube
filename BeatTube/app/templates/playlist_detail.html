@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — {{ playlist.name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="principal">
+    <div class="parte-cima">
+        <img src="{{ playlist.cover_url or url_for('static', filename='img/playlist1.jpg') }}" alt="{{ playlist.name }}" class="album-cover">
+        <div class="album-info">
+            <p class="tipo">PLAYLIST</p>
+            <h1 class="album-titulo">{{ playlist.name }}</h1>
+            {% if playlist.description %}
+            <p class="album-artista">{{ playlist.description }}</p>
+            {% endif %}
+            <p class="views">{{ songs|length }} músicas</p>
+        </div>
+    </div>
+
+    <div class="principal-baixo">
+        {% for song in songs %}
+        <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica-link">
+            <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" class="mini-capa">
+            <div class="musica-info">
+                <p class="musica-titulo">{{ song.title }}</p>
+                <p class="musica-artista">{{ song.main_artist.name if song.main_artist else '' }}</p>
+            </div>
+            <p class="musica-tempo">{{ song.duration_str }}</p>
+            <button class="musica-opcoes"><span class="material-symbols-outlined">more_horiz</span></button>
+        </a>
+        {% else %}
+        <p style="color:#B3B3B3;padding:20px 0;">Nenhuma música nesta playlist ainda.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

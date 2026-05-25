@@ -1,4 +1,4 @@
-  html, body {
+html, body {
   background-color: #070200;
   font-family: 'Poppins', sans-serif;
   color: #B3B3B3;
@@ -38,6 +38,7 @@ header {
   gap: 0;
   height: 10px;
   user-select: none;
+  text-decoration: none;
 }
 
 .logo p {
@@ -60,18 +61,13 @@ header {
 
 .header-centro input {
   width: 200px;
-
   padding: 10px 15px;
-
   border-radius: 20px;
   border: none;
-
   background-color: transparent;
   color: white;
-
   outline: none;
   text-align: center;
-
   transition: 0.2s;
 }
 
@@ -81,14 +77,10 @@ header {
 
 .pesquisa-btn {
   color: #B3B3B3;
-
   background: none;
   border: none;
-
   cursor: pointer;
-
   border-radius: 50%;
-
   transition: 0.2s;
 }
 
@@ -104,17 +96,13 @@ header {
 
 .login-btn {
   padding: 10px 20px;
-
   border: none;
   border-radius: 20px;
-
   background-color: #ff6600;
   color: white;
   user-select: none;
-
   font-weight: 700;
   cursor: pointer;
-
   transition: 0.2s;
 }
 
@@ -125,15 +113,11 @@ header {
 /* BARRA LATERAL */
 .sidebar {
   position: fixed;
-
   top: 70px;
   left: 0;
-
   width: 200px;
   height: 100vh;
-
   border-right: 2px solid #B3B3B3;
-
   padding-right: 10px;
 }
 
@@ -146,7 +130,6 @@ header {
 
 .sidebar p {
   color: white;
-
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -154,24 +137,16 @@ header {
 .sidebar a {
   display: flex;
   align-items: center;
-
   gap: 8px;
-
   width: 90%;
-
   padding: 12px 16px;
-
   margin-left: 0px;
   padding-left: 5px;
-
   border-radius: 14px;
-
   font-size: 1.1rem;
   font-weight: 500;
-
   text-decoration: none;
   color: #B3B3B3;
-
   transition: 0.2s;
 }
 
@@ -188,7 +163,6 @@ header {
 main {
   margin-left: 210px;
   margin-top: 50px;
-
   padding: 20px;
 }
 
@@ -200,28 +174,20 @@ main {
 .card {
   display: block;
   position: relative;
-
   width: 100%;
   height: 220px;
-
   margin-top: 0;
-
   border-radius: 20px;
-
   overflow: hidden;
   transition: 0.3s;
 }
 
 .card::before {
   content: "";
-
   position: absolute;
   inset: 0;
-
   background-color: rgba(255, 255, 255, 0);
-
   transition: 0.3s;
-
   z-index: 1;
 }
 
@@ -232,9 +198,7 @@ main {
 .card img {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   object-position: center 20%;
   transition: 0.4s;
 }
@@ -246,25 +210,20 @@ main {
 .overlay {
   position: absolute;
   inset: 0;
-
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.8),
     rgba(0, 0, 0, 0.2)
   );
-
   display: flex;
   flex-direction: column;
   justify-content: end;
-
   padding: 30px;
 }
 
 .overlay h3 {
   color: white;
-
   font-size: 2rem;
-
   margin: 10px 0 5px 0;
 }
 
@@ -275,14 +234,10 @@ main {
 
 .tag {
   width: fit-content;
-
   background-color: #ff6600;
   color: white;
-
   padding: 5px 12px;
-
   border-radius: 20px;
-
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -304,14 +259,11 @@ main {
 
 .musica {
   width: 160px;
-  height: 200px;
-
+  height: 230px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
   padding: 10px;
-
   border-radius: 16px;
   text-decoration: none;
   color: white;
@@ -320,20 +272,15 @@ main {
 
 .musica:hover {
   background-color: #1a1a1a;
-
   transform: translateY(-3px);
-
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-
   cursor: pointer;
 }
 
 .capa {
   width: 160px;
   height: 140px;
-
   object-fit: cover;
-
   border-radius: 5px;
 }
 
@@ -356,18 +303,14 @@ main {
 /* =====================
    MODAL
    ===================== */
-
 .modal-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(3px);
-
-  display: none; /* começa escondido */
+  display: none;
   align-items: center;
   justify-content: center;
-
   z-index: 9999;
 }
 
@@ -375,21 +318,15 @@ main {
   background-color: #111111;
   border: 1px solid #2a2a2a;
   border-radius: 18px;
-
   width: 360px;
-
   padding: 32px 28px 28px;
-
   display: flex;
   flex-direction: column;
   gap: 0;
-
   color: white;
-
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 102, 0, 0.08);
 }
 
-/* Logo dentro do modal */
 .logo-modal {
   display: flex;
   align-items: center;
@@ -412,7 +349,6 @@ main {
   padding: 2px;
 }
 
-/* Título Login */
 .modal-title {
   text-align: center;
   font-size: 1.25rem;
@@ -421,7 +357,6 @@ main {
   margin: 0 0 24px 0;
 }
 
-/* Campos */
 .field {
   display: flex;
   flex-direction: column;
@@ -439,13 +374,10 @@ main {
   background: #1a1a1a;
   border: 2px solid #ff6600;
   border-radius: 10px;
-
   padding: 12px 14px;
-
   color: white;
   font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
-
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -459,25 +391,18 @@ main {
   color: #555;
 }
 
-/* Botão entrar */
 .entrar-btn {
   background: #ff6600;
   color: white;
-
   border: none;
   border-radius: 10px;
-
   padding: 13px;
   margin-top: 6px;
-
   width: 100%;
-
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 700;
-
   cursor: pointer;
-
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
@@ -491,7 +416,6 @@ main {
   transform: scale(0.98);
 }
 
-/* Link cadastro */
 .cadastro-link {
   text-align: center;
   font-size: 0.85rem;
@@ -514,22 +438,15 @@ main {
 
 .fechar-btn {
   background: transparent;
-
   border: 1px solid #444;
   color: white;
-
   padding: 10px;
   margin-top: 4px;
-
   width: 100%;
-
   border-radius: 10px;
-
   font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
-
   cursor: pointer;
-
   transition: 0.2s;
 }
 
@@ -537,64 +454,235 @@ main {
   background: #222;
 }
 
-.artista1 {
-  width: 100px;
-  height: 100px;
+/* =====================
+   USER MENU (header)
+   ===================== */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #ff6600;
+  flex-shrink: 0;
 }
 
-.artista {
-  width: 160px;
-  height: 200px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding: 10px;
-
-  border-radius: 16px;
-  text-decoration: none;
-  color: white;
-   transition: 0.2s;
+.user-icon {
+  font-size: 2rem;
+  color: #B3B3B3;
 }
 
-.album {
-  width: 160px;
-  height: 200px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding: 10px;
-
-  border-radius: 16px;
-  text-decoration: none;
+.username {
   color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-link {
+  color: #B3B3B3;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid #444;
+  border-radius: 20px;
   transition: 0.2s;
 }
 
-.album:hover {
-  background-color: #1a1a1a;
+.logout-link:hover {
+  color: white;
+  border-color: #ff6600;
+  background-color: #1a0a00;
+}
 
-  transform: translateY(-3px);
-
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-
+/* =====================
+   BOTÃO POSTAR
+   ===================== */
+.postar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #ff6600;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.capaA {
-  width: 160px;
-  height: 140px;
-
-  object-fit: cover;
-
-  border-radius: 5px;
+.postar-btn:hover {
+  background-color: #ff7a1a;
+  transform: scale(1.05);
 }
 
-.album p {
-  margin-bottom: 0;
+.modal-postar {
+  width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-postar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-postar::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 10px;
+}
+
+.modal-postar::-webkit-scrollbar-thumb {
+  background: #ff6600;
+  border-radius: 10px;
+}
+
+.modal input[type="file"] {
+  background: #1a1a1a;
+  border: 2px dashed #444;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #B3B3B3;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.modal input[type="file"]:hover {
+  border-color: #ff6600;
+}
+
+/* =====================
+   TOAST / NOTIFICAÇÃO
+   ===================== */
+.toast-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 99999;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-left: 4px solid #ff6600;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  min-width: 280px;
+  max-width: 360px;
+  animation: toastIn 0.3s ease;
+}
+
+.toast.erro {
+  border-left-color: #e53935;
+}
+
+.toast.sucesso {
+  border-left-color: #43a047;
+}
+
+.toast .toast-icon {
+  font-size: 1.3rem;
+  color: #ff6600;
+  flex-shrink: 0;
+}
+
+.toast.erro .toast-icon { color: #e53935; }
+.toast.sucesso .toast-icon { color: #43a047; }
+
+.toast .toast-msg {
+  flex: 1;
+}
+
+.toast .toast-fechar {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.toast .toast-fechar:hover {
+  color: white;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(40px); }
+}
+
+/* =====================
+   ERRO DE FORMULÁRIO
+   ===================== */
+.form-erro {
+  color: #ff4444;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 4px 0 0 0;
+}
+
+/* =====================
+   GOOGLE BTN
+   ===================== */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  height: 48px;
+
+  background: #fff;
+  color: #333;
+
+  border: none;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  padding: 0 14px;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition: 0.2s;
+}
+
+.google-btn:hover {
+  background: #f0f0f0;
+  transform: scale(1.02);
 }
