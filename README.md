@@ -1,99 +1,168 @@
 # reimagined-youtube
 
-Otavio Martins,
-Rafael Leite da Silva Francisco, 
-Miguel Isaias Ledesma Araujo, 
-Murilo Santos Barbosa,
-Pedro henrique da Silva Bernardo.
+Projeto desenvolvido por:
 
-Professora, boa noite, tudo bem? então, abrir o projeto na sua maquina talvez nn seja tão facil, então deixei aqui um mini tutorial que eu acho necessario,
+- Otavio Martins
+- Rafael Leite da Silva Francisco
+- Miguel Isaias Ledesma Araujo
+- Murilo Santos Barbosa
+- Pedro Henrique da Silva Bernardo
 
-# ViewTube — Como Rodar o Projeto
+---
+
+## Sobre o projeto
+
+Este repositório contém dois projetos web desenvolvidos em Flask:
+
+**ViewTube** — plataforma de vídeos com upload, canais, playlists, histórico, curtidas e sistema de inscrições. Banco de dados: Azure SQL Server.
+
+**BeatTube** — plataforma voltada a música, com funcionalidades similares ao ViewTube. Banco de dados: Azure SQL Server. Armazenamento de arquivos: Azure Blob Storage.
+
+---
+
+## Estrutura de pastas
+
+```
+viewtube/
+├── app/
+│   ├── routes/       # Rotas da aplicação (blueprints)
+│   ├── static/       # CSS, JS e imagens
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── img/
+│   ├── templates/    # HTMLs (Jinja2)
+│   ├── __init__.py
+│   └── models.py
+├── .env.example
+├── requirements.txt
+└── run.py
+
+beattube/
+├── app/
+│   ├── routes/
+│   ├── static/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── img/
+│   ├── templates/
+│   ├── __init__.py
+│   └── models.py
+├── .env.example
+├── requirements.txt
+└── run.py
+```
+
+---
 
 ## Requisitos
 
-Instale os programas abaixo antes de começar:
+Antes de começar, instale:
 
 - **Python 3.12** — https://www.python.org/downloads/
-  - Durante a instalação, marque "Add Python to PATH"
-- **MySQL 8.0** — https://dev.mysql.com/downloads/installer/
-  - Escolha "Server Only" ou "Developer Default"
-  - Anote a senha do root que você definir
+  Na instalação, marque **"Add Python to PATH"** antes de clicar em Install.
+
+- **Driver ODBC para Azure SQL** — https://aka.ms/downloadmsodbcsql
+  Baixe o arquivo **x64** e instale normalmente (next → next → finish).
 
 ---
 
-## Passo a Passo
+## Como rodar (ViewTube e BeatTube seguem o mesmo processo)
 
-### 1. Abrir o terminal na pasta do projeto
+### 1. Extrair o ZIP
 
-No VS Code, abra a pasta do projeto e o terminal integrado (Ctrl + ').
+Extraia em algum lugar fácil, como `C:\ViewTube` ou `C:\BeatTube`.
 
-Entre na pasta correta:
+### 2. Abrir o terminal na pasta do projeto
 
-    cd viewtube
+Abra a pasta `viewtube` (ou `beattube`) no Explorer, clique na barra de endereço, digite `cmd` e pressione Enter.
 
-### 2. Criar o banco de dados
+Ou no VS Code, abra a pasta e use o terminal integrado com `Ctrl + '`.
 
-Conecte ao MySQL:
+### 3. Criar o ambiente virtual
 
-    mysql -u root -p
+```
+python -m venv venv
+```
 
-Digite sua senha quando pedido. Depois:
+### 4. Ativar o ambiente virtual
 
-    CREATE DATABASE viewtube;
-    EXIT;
+```
+venv\Scripts\activate
+```
 
-### 3. Importar o banco de dados
+O terminal vai mostrar `(venv)` no início quando ativado corretamente.
 
-    cmd /c "mysql -u root -p viewtube < viewtube.sql"
+### 5. Instalar as dependências
 
-### 4. Criar o usuário padrão no banco
+```
+python -m pip install -r requirements.txt
+```
 
-    mysql -u root -pSUA_SENHA viewtube -e "INSERT INTO users (id, username, email, password_hash) VALUES (1, 'admin', 'admin@viewtube.com', 'admin');"
+Instale também os pacotes adicionais:
 
-Substitua SUA_SENHA pela sua senha do MySQL.
+```
+pip install pillow
+pip install azure-storage-blob
+```
 
-### 5. Configurar o arquivo .env
+### 6. Configurar o .env
 
-Copie o arquivo de exemplo:
+Dentro da pasta do projeto tem um arquivo `.env.example`. Copie ele e renomeie a cópia para `.env` (sem o `.example`):
 
-    copy .env.example .env
+```
+copy .env.example .env
+```
 
-Abra o .env e preencha com seus dados:
+Abra o `.env` com o Bloco de Notas e preencha com as credenciais do Azure SQL, Azure Blob Storage e Google OAuth que serão fornecidas separadamente.
 
-    DB_HOST=localhost
-    DB_PORT=3306
-    DB_USER=root
-    DB_PASSWORD=sua_senha_aqui
-    DB_NAME=viewtube
+O arquivo tem este formato:
 
-### 6. Instalar as dependências
+```
+SECRET_KEY=
+FLASK_ENV=development
+FLASK_DEBUG=1
 
-    pip install -r requirements.txt
+DB_SERVER=seu-servidor.database.windows.net
+DB_NAME=nome-do-banco
+DB_USER=seu-usuario
+DB_PASSWORD=sua-senha
+DB_DRIVER=ODBC Driver 18 for SQL Server
 
-### 7. Rodar o projeto
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 
-    python app.py
+BASE_URL=http://localhost:5000
 
-Acesse no navegador: http://127.0.0.1:5000
+# Apenas BeatTube:
+AZURE_STORAGE_CONNECTION_STRING=
+AZURE_CONTAINER_VIDEOS=videos
+AZURE_CONTAINER_THUMBNAILS=thumbnails
+```
+
+**Nunca suba o `.env` para o repositório.**
+
+### 7. Rodar
+
+```
+python run.py
+```
+
+Acesse no navegador: **http://localhost:5000** (ViewTube roda na porta 5001 se ambos estiverem ativos ao mesmo tempo)
 
 ---
 
-## Problemas Comuns
+## Problemas comuns
 
 | Problema | Solução |
 |---|---|
-| mysql nao reconhecido | Adicione ao PATH: C:\Program Files\MySQL\MySQL Server 8.0\bin |
-| python nao reconhecido | Reinstale o Python marcando "Add to PATH" |
-| Erro de conexao com banco | Verifique se o MySQL esta rodando: net start mysql80 (como administrador) |
-| Erro 500 ao publicar | Verifique se o passo 4 foi executado |
+| `python` não reconhecido | Reinstale o Python marcando "Add to PATH" |
+| `pip` não reconhecido | Rode `python -m pip` no lugar de `pip` |
+| Erro de conexão com o banco | Confirme que o `.env` está preenchido corretamente e que o servidor Azure está acessível |
+| Erro no driver ODBC | Verifique se instalou o driver x64 corretamente |
+| Porta já em uso | Mude a porta no `run.py` ou encerre o processo que está usando |
 
 ---
 
-## Observacoes
+## Observações
 
-O banco de dados roda localmente em cada maquina. Cada pessoa que rodar o projeto
-tera sua propria instancia do banco, sem compartilhamento de dados entre maquinas.
-
-Na proxima versao do projeto, o banco de dados sera migrado para um servidor remoto,
-permitindo que todos os usuarios acessem os mesmos dados independente da maquina.
+O banco de dados fica em um servidor remoto no Azure, então todos que rodarem o projeto com as mesmas credenciais acessam os mesmos dados. Cada pessoa configura o `.env` localmente com as credenciais fornecidas — sem isso o projeto não conecta.
