@@ -1,0 +1,51 @@
+<div class="video-card" data-video-url="{{ video.video_url }}" data-thumb="{{ video.thumbnail_url or '' }}">
+  <a href="{{ url_for('video.watch', video_id=video.id) }}" class="card-thumb" tabindex="-1">
+    <div class="card-thumb-inner">
+      {% if video.thumbnail_url %}
+        <img class="card-thumb-img" src="{{ video.thumbnail_url }}" alt="{{ video.title }}" loading="lazy">
+      {% else %}
+        <div class="thumb-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </div>
+      {% endif %}
+      <video class="card-preview-video" muted playsinline preload="none" tabindex="-1"></video>
+    </div>
+    <span class="duration-badge" data-duration="{{ video.duration_sec or '' }}">
+      {% if video.duration_sec %}{{ video.duration_str }}{% endif %}
+    </span>
+    <div class="card-preview-bar">
+      <div class="card-preview-fill"></div>
+    </div>
+  </a>
+
+  <div class="card-info">
+    {% if video.channel and video.channel.profile_image_url %}
+      <a href="{{ url_for('channel.canal', channel_id=video.channel.id) }}" class="channel-avatar-sm">
+        <img src="{{ video.channel.profile_image_url }}" alt="{{ video.channel.name }}">
+      </a>
+    {% else %}
+      <a href="{{ url_for('channel.canal', channel_id=video.channel.id) if video.channel else '#' }}" class="channel-avatar-sm channel-avatar-fallback">
+        {{ (video.channel.name[0].upper() if video.channel else '?') }}
+      </a>
+    {% endif %}
+    <div class="card-meta">
+      <a href="{{ url_for('video.watch', video_id=video.id) }}" class="card-title">{{ video.title }}</a>
+      <a href="{{ url_for('channel.canal', channel_id=video.channel.id) if video.channel else '#' }}" class="card-channel">
+        {{ video.channel.name if video.channel else 'Canal desconhecido' }}
+      </a>
+      <span class="card-stats">{{ video.views_fmt }} visualizações · {{ video.age_str }}</span>
+    </div>
+
+    <!-- Botão 3 pontos -->
+    <div class="card-menu-wrap">
+      <button class="card-menu-btn" aria-label="Mais opções"
+              onclick="openCardMenu(event, {{ video.id }}, '{{ video.title|replace("'","\\'") }}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

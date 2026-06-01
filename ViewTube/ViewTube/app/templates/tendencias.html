@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Em Alta — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <h2 class="page-title">🔥 Em Alta</h2>
+  {% if videos %}
+    <div class="video-list">
+      {% for video in videos %}
+        <div class="video-list-item ranked">
+          <span class="rank-num">{{ loop.index }}</span>
+          <a href="{{ url_for('video.watch', video_id=video.id) }}" class="list-thumb">
+            {% if video.thumbnail_url %}
+              <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" loading="lazy">
+            {% else %}
+              <div class="thumb-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            {% endif %}
+            <span class="duration-badge">{{ video.duration_str }}</span>
+          </a>
+          <div class="list-info">
+            <a href="{{ url_for('video.watch', video_id=video.id) }}" class="list-title">{{ video.title }}</a>
+            <a href="{{ url_for('channel.canal', channel_id=video.channel.id) if video.channel else '#' }}" class="list-channel">{{ video.channel.name if video.channel else '' }}</a>
+            <span class="list-stats">{{ video.views_fmt }} views · {{ video.age_str }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><p>Nenhum vídeo em alta ainda.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

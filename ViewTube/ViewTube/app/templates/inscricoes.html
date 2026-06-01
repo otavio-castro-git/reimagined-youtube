@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Inscrições — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <h2 class="page-title">Inscrições</h2>
+
+  {% if channels %}
+    <div class="channels-row">
+      {% for channel in channels %}
+        <a href="{{ url_for('channel.canal', channel_id=channel.id) }}" class="channel-chip">
+          {% if channel.profile_image_url %}
+            <img src="{{ channel.profile_image_url }}" alt="{{ channel.name }}">
+          {% else %}
+            <div class="channel-chip-avatar">{{ channel.name[0].upper() }}</div>
+          {% endif %}
+          <span>{{ channel.name }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if videos %}
+    <h3 class="section-title" style="margin-top:2rem">Vídeos recentes</h3>
+    <div class="video-grid">
+      {% for video in videos %}
+        {% include "_video_card.html" %}
+      {% endfor %}
+    </div>
+  {% elif not channels %}
+    <div class="empty-state">
+      <p>Você ainda não se inscreveu em nenhum canal.</p>
+      <a href="{{ url_for('home.index') }}" class="btn-primary" style="margin-top:1rem">Explorar</a>
+    </div>
+  {% else %}
+    <div class="empty-state"><p>Seus canais ainda não postaram vídeos.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

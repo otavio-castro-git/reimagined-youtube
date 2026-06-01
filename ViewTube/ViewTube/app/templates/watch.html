@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}{{ video.title }} — ViewTube{% endblock %}
+
+{% block content %}
+<div class="watch-layout">
+
+  <!-- ─── PLAYER + INFO ──────────────────────────────────────── -->
+  <div class="watch-main">
+
+    <!-- ══ CUSTOM PLAYER ══════════════════════════════════════ -->
+    <div class="vt-player-wrap" id="vtPlayerWrap">
+      <video id="videoPlayer" playsinline preload="auto"
+       poster="{{ video.thumbnail_url or '' }}"
+       crossorigin="anonymous">
+  <source src="{{ url_for('video.stream', vid=video.id) }}" type="video/mp4">
+</video>
+
+      <!-- Big play overlay -->
+      <div class="vt-play-overlay" id="vtPlayOverlay">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+
+      <!-- Controls -->
+      <div class="vt-controls" id="vtControls">
+
+        <!-- Progress bar -->
+        <div class="vt-progress" id="vtProgress">
+          <div class="vt-progress-buffered" id="vtBuffered"></div>
+          <div class="vt-progress-played" id="vtPlayed"></div>
+          <div class="vt-progress-thumb" id="vtThumb"></div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="vt-bottom">
+          <div class="vt-left">
+            <!-- Play/Pause -->
+            <button class="vt-btn" id="vtPlayPause" title="Play/Pause (Space)">
+              <svg id="vtIconPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg id="vtIconPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+
+            <!-- Volume -->
+            <div class="vt-volume-wrap">
+              <button class="vt-btn" id="vtMute" title="Mudo (M)">
+                <svg id="vtIconVol" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path id="vtVolWave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  <path id="vtVolWave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+              </button>
+              <div class="vt-volume-slider-wrap">
+                <input type="range" class="vt-volume-slider" id="vtVolume" min="0" max="1" step="0.02" value="1">
+              </div>
+            </div>
+
+            <!-- Time -->
+            <span class="vt-time" id="vtTime">0:00 / 0:00</span>
+          </div>
+
+          <div class="vt-right">
+            <!-- Download -->
+            <button class="vt-btn" id="vtDownload" title="Baixar"
+                    data-premium="{{ 'true' if current_user.is_authenticated and current_user.is_premium else 'false' }}"
+                    data-url="{{ video.video_url }}"
+                    data-title="{{ video.title }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
+
+            <!-- Speed -->
+            <div class="vt-menu-wrap">
+              <button class="vt-btn vt-btn-text" id="vtSpeedBtn" title="Velocidade">1×</button>
+              <div class="vt-menu" id="vtSpeedMenu">
+                <div class="vt-menu-title">Velocidade</div>
+                {% for s in ['0.25','0.5','0.75','1','1.25','1.5','1.75','2'] %}
+                  <button class="vt-menu-item {% if s == '1' %}active{% endif %}" data-speed="{{ s }}">{{ s }}×</button>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Quality (placeholder — shows labels if multiple sources) -->
+            <div class="vt-menu-wrap" id="vtQualityWrap" style="display:none">
+              <button class="vt-btn vt-btn-text" id="vtQualityBtn" title="Qualidade">Auto</button>
+              <div class="vt-menu" id="vtQualityMenu">
+                <div class="vt-menu-title">Qualidade</div>
+              </div>
+            </div>
+
+            <!-- Settings (gear) -->
+            <button class="vt-btn" id="vtSettings" title="Configurações">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+            <div class="vt-menu vt-settings-menu" id="vtSettingsMenu">
+              <div class="vt-menu-title">Configurações</div>
+              <button class="vt-menu-item" id="vtLoopToggle">🔁 Loop: <span id="vtLoopState">Off</span></button>
+              <button class="vt-menu-item" id="vtAutoplayToggle">▶ Autoplay: <span id="vtAutoplayState">On</span></button>
+            </div>
+
+            <!-- Fullscreen -->
+            <button class="vt-btn" id="vtFullscreen" title="Tela cheia (F)">
+              <svg id="vtIconFs" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+              </svg>
+              <svg id="vtIconFsExit" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download toast (não premium) -->
+      <div class="vt-toast" id="vtToast"></div>
+    </div>
+    <!-- ══ END PLAYER ══════════════════════════════════════════ -->
+
+    <div class="video-info">
+      <h1 class="video-title">{{ video.title }}</h1>
+
+      <div class="video-meta-row">
+        <div class="channel-info">
+          <a href="{{ url_for('channel.canal', channel_id=video.channel.id) }}" class="channel-link">
+            {% if video.channel.profile_image_url %}
+              <img src="{{ video.channel.profile_image_url }}" alt="{{ video.channel.name }}" class="channel-avatar">
+            {% else %}
+              <div class="channel-avatar channel-avatar-lg">{{ video.channel.name[0].upper() }}</div>
+            {% endif %}
+            <div>
+              <strong>{{ video.channel.name }}</strong>
+              <small>{{ video.channel.subscriber_count }} inscritos</small>
+            </div>
+          </a>
+          {% if current_user.is_authenticated %}
+            <button class="btn-subscribe {% if is_subscribed %}subscribed{% endif %}"
+                    id="subscribeBtn" data-channel="{{ video.channel.id }}">
+              {{ 'Inscrito' if is_subscribed else 'Inscrever-se' }}
+            </button>
+          {% endif %}
+        </div>
+
+        <div class="video-actions">
+          <button class="btn-action {% if is_liked %}liked{% endif %}" id="likeBtn" data-video="{{ video.id }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="{{ 'currentColor' if is_liked else 'none' }}" stroke="currentColor" stroke-width="2">
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+              <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+            </svg>
+            <span id="likeCount">{{ video.likes_count }}</span>
+          </button>
+          <button class="btn-action" id="shareBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            Compartilhar
+          </button>
+        </div>
+      </div>
+
+      <div class="video-stats">
+        {{ video.views_fmt }} visualizações · {{ video.age_str }}
+        {% for tag in video.tags %}
+          <a href="{{ url_for('home.index', tag=tag.name) }}" class="tag-inline">#{{ tag.name }}</a>
+        {% endfor %}
+      </div>
+
+      {% if video.description %}
+        <div class="video-description" id="videoDesc">
+          <p>{{ video.description[:300] }}</p>
+          {% if video.description|length > 300 %}
+            <button class="expand-btn" id="expandDesc">Mostrar mais</button>
+          {% endif %}
+          <div class="desc-full hidden">{{ video.description }}</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- ─── COMENTÁRIOS ──────────────────────────────────────── -->
+    <div class="comments-section">
+      <h3>{{ comments|length }} comentário{% if comments|length != 1 %}s{% endif %}</h3>
+
+      {% if current_user.is_authenticated %}
+        <div class="comment-form">
+          <div class="comment-avatar">
+            {% if current_user.profile_image %}
+              <img src="{{ current_user.profile_image }}" alt="{{ current_user.username }}">
+            {% else %}
+              <div class="avatar-placeholder">{{ current_user.username[0].upper() }}</div>
+            {% endif %}
+          </div>
+          <div class="comment-input-wrap">
+            <textarea id="commentInput" placeholder="Adicionar um comentário…" rows="1"></textarea>
+            <div class="comment-actions hidden" id="commentActions">
+              <button class="btn-secondary" id="cancelComment">Cancelar</button>
+              <button class="btn-primary" id="postComment" data-video="{{ video.id }}">Comentar</button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="comments-list" id="commentsList">
+        {% for comment in comments %}
+          <div class="comment">
+            <div class="comment-avatar">
+              {% if comment.user.profile_image %}
+                <img src="{{ comment.user.profile_image }}" alt="{{ comment.user.username }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ comment.user.username[0].upper() }}</div>
+              {% endif %}
+            </div>
+            <div class="comment-body">
+              <span class="comment-author">{{ comment.user.username }}</span>
+              <span class="comment-date">{{ comment.created_at.strftime('%d/%m/%Y') }}</span>
+              <p>{{ comment.content }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── RECOMENDAÇÕES ────────────────────────────────────── -->
+  <aside class="watch-sidebar">
+    <h3 class="sidebar-heading">A seguir</h3>
+    {% for rec in recommended %}
+      <a href="{{ url_for('video.watch', video_id=rec.id) }}" class="rec-card">
+        <div class="rec-thumb">
+          {% if rec.thumbnail_url %}
+            <img src="{{ rec.thumbnail_url }}" alt="{{ rec.title }}" loading="lazy">
+          {% else %}
+            <div class="thumb-placeholder-sm">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          {% endif %}
+          <span class="duration-badge-sm">{{ rec.duration_str }}</span>
+        </div>
+        <div class="rec-info">
+          <p class="rec-title">{{ rec.title }}</p>
+          <p class="rec-channel">{{ rec.channel.name if rec.channel else '' }}</p>
+          <p class="rec-stats">{{ rec.views_fmt }} views</p>
+        </div>
+      </a>
+    {% endfor %}
+  </aside>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const VIDEO_ID   = {{ video.id }};
+const IS_AUTH    = {{ 'true' if current_user.is_authenticated else 'false' }};
+const IS_PREMIUM = {{ 'true' if current_user.is_authenticated and current_user.is_premium else 'false' }};
+</script>
+<script src="{{ url_for('static', filename='js/watch.js') }}"></script>
+{% endblock %}

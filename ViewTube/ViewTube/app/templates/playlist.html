@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ playlist.name }} — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">{{ playlist.name }}</h2>
+      <p style="color:var(--text-secondary);margin:.25rem 0 0">
+        {% if playlist.is_public %}🌐 Pública{% else %}🔒 Privada{% endif %} · {{ videos|length }} vídeos
+      </p>
+      {% if playlist.description %}<p style="color:var(--text-secondary);margin:.5rem 0 0">{{ playlist.description }}</p>{% endif %}
+    </div>
+    {% if is_owner %}
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <button class="btn-secondary" onclick="toggleVis()">
+        {% if playlist.is_public %}Tornar privada{% else %}Tornar pública{% endif %}
+      </button>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if videos %}
+    <div class="playlist-list">
+      {% for video in videos %}
+      <div class="playlist-row" data-vid="{{ video.id }}">
+        <a href="{{ url_for('video.watch', video_id=video.id) }}" class="playlist-row-thumb">
+          {% if video.thumbnail_url %}
+            <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}">
+          {% else %}
+            <div class="thumb-fallback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+          {% endif %}
+          <span class="duration-badge">{{ video.duration_str }}</span>
+        </a>
+        <div class="playlist-row-info">
+          <a href="{{ url_for('video.watch', video_id=video.id) }}" class="playlist-row-title">{{ video.title }}</a>
+          <span class="playlist-row-channel">{{ video.channel.name }}</span>
+        </div>
+        {% if is_owner %}
+        <button class="btn-icon-sm btn-danger-sm" onclick="removerDaPlaylist({{ video.id }}, this)" title="Remover da playlist">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>Esta playlist está vazia.</p>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+async function toggleVis() {
+  const res = await fetch('/api/playlists/{{ playlist.id }}/toggle-visibility', {method:'POST'});
+  const data = await res.json();
+  if (data.ok) location.reload();
+}
+async function removerDaPlaylist(videoId, btn) {
+  const res = await fetch('/api/playlists/{{ playlist.id }}/remove-video', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({video_id: videoId})
+  });
+  const data = await res.json();
+  if (data.ok) btn.closest('.playlist-row').remove();
+}
+</script>
+{% endblock %}

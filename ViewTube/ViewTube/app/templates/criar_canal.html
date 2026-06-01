@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Criar canal — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:480px;margin:3rem auto">
+  <h2 class="page-title">Criar seu canal</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1.5rem">Crie um canal para publicar vídeos no ViewTube.</p>
+  <form id="createChannelForm">
+    <div class="form-group">
+      <label>Nome do canal *</label>
+      <input type="text" name="name" required maxlength="150" placeholder="Ex: Canal do João">
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea name="description" rows="3" placeholder="Sobre o que é seu canal…"></textarea>
+    </div>
+    <div class="form-error" id="channelError"></div>
+    <button type="submit" class="btn-primary btn-large">Criar canal</button>
+  </form>
+</div>
+<script>
+document.getElementById('createChannelForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch('/criar-canal', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (json.ok) window.location.href = `/canal/${json.id}`;
+  else document.getElementById('channelError').textContent = json.msg;
+});
+</script>
+{% endblock %}

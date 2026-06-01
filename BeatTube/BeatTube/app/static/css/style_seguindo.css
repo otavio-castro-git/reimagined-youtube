@@ -1,0 +1,178 @@
+html, body {
+  background-color: #070200;
+  font-family: 'Poppins', sans-serif;
+  color: #B3B3B3;
+  margin: 0;
+}
+
+main {
+  margin-left: 210px;
+  margin-top: 70px;
+  padding: 30px 24px;
+}
+
+/* HEADER */
+.seguindo-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.seguindo-header h2 {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.seguindo-header h2 span { color: #ff6600; }
+
+.seguindo-sub {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* GRID */
+.seguindo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 24px;
+}
+
+/* CARD */
+.artist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 10px 12px;
+  border-radius: 16px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.artist-card:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-3px);
+}
+
+.artist-card-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 4px;
+  width: 100%;
+}
+
+/* AVATAR CIRCULAR */
+.artist-avatar-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 3px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.artist-card:hover .artist-avatar-wrap {
+  border-color: #ff6600;
+}
+
+.artist-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.artist-nome {
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.artist-tipo {
+  color: #666;
+  font-size: 0.8rem;
+  margin: 0 0 8px 0;
+}
+
+/* BOTÃO SEGUINDO */
+.btn-seguir {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #B3B3B3;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-seguir .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+.btn-seguir.ativo {
+  border-color: #ff6600;
+  color: #ff6600;
+}
+
+.btn-seguir:hover {
+  border-color: #ff4444;
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.08);
+}
+
+.btn-seguir:hover .material-symbols-outlined::before {
+  content: 'close';
+}
+
+/* VAZIO */
+.seguindo-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 100px;
+  color: #444;
+}
+
+.seguindo-vazio .material-symbols-outlined {
+  font-size: 4rem;
+  color: #333;
+}
+
+.seguindo-vazio p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.seguindo-vazio a {
+  color: #ff6600;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.seguindo-vazio a:hover {
+  text-decoration: underline;
+}
+
+/* MODO CLARO */
+html[data-tema="claro"] body { background-color: #f5f5f5 !important; color: #1a1a1a !important; }
+html[data-tema="claro"] .artist-card:hover { background-color: #eeeeee !important; }
+html[data-tema="claro"] .artist-nome { color: #1a1a1a !important; }

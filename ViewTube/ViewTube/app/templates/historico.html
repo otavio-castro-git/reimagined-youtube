@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Histórico — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="page-header-row">
+    <h2 class="page-title">Histórico de visualizações</h2>
+    {% if videos %}
+    <button class="btn-danger" id="btnClearHistory">Apagar histórico</button>
+    {% endif %}
+  </div>
+  {% if videos %}
+    <div class="video-grid">
+      {% for video in videos %}
+        {% include "_video_card.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polyline points="12 8 12 12 14 14"/><path d="M3.05 11A9 9 0 1 0 4 18.4L2 20"/><polyline points="2 15 2 20 7 20"/>
+      </svg>
+      <p>Você ainda não assistiu nenhum vídeo.</p>
+    </div>
+  {% endif %}
+</div>
+<script>
+const btn = document.getElementById('btnClearHistory');
+if (btn) {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Apagar todo o histórico?')) return;
+    const res = await fetch('/api/historico/clear', {method:'POST'});
+    const data = await res.json();
+    if (data.ok) location.reload();
+  });
+}
+</script>
+{% endblock %}

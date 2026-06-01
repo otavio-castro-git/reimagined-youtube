@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}ViewTube — Início{% endblock %}
+
+{% block content %}
+
+<!-- ─── TAG PILLS ──────────────────────────────────────────────── -->
+<div class="tag-bar">
+  <a href="{{ url_for('home.index') }}" class="tag-pill {% if active_tag == 'all' %}active{% endif %}">Tudo</a>
+  {% for tag in tags %}
+    <a href="{{ url_for('home.index', tag=tag.name) }}"
+       class="tag-pill {% if active_tag == tag.name %}active{% endif %}">{{ tag.name }}</a>
+  {% endfor %}
+</div>
+
+<!-- ─── CONTINUAR ASSISTINDO ──────────────────────────────────── -->
+{% if continuar %}
+<section class="section">
+  <h2 class="section-title">Continuar assistindo</h2>
+  <div class="video-grid">
+    {% for video in continuar %}
+      {% include "_video_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ─── FEED DE INSCRIÇÕES ────────────────────────────────────── -->
+{% if sub_videos %}
+<section class="section">
+  <h2 class="section-title">Canais que você segue</h2>
+  <div class="video-grid">
+    {% for video in sub_videos %}
+      {% include "_video_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ─── VÍDEOS ────────────────────────────────────────────────── -->
+<section class="section">
+  {% if active_tag != 'all' %}
+    <h2 class="section-title">{{ active_tag }}</h2>
+  {% elif not continuar and not sub_videos %}
+    <h2 class="section-title">Vídeos</h2>
+  {% else %}
+    <h2 class="section-title">Recomendados</h2>
+  {% endif %}
+
+  {% if videos %}
+    <div class="video-grid">
+      {% for video in videos %}
+        {% include "_video_card.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.97C18.88 4 12 4 12 4s-6.88 0-8.59.45A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.45a2.78 2.78 0 0 0 1.95-1.97A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+      </svg>
+      <p>Nenhum vídeo encontrado.</p>
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ query or 'Busca' }} — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <h2 class="page-title">
+    {% if query %}Resultados para "<em>{{ query }}</em>"{% else %}Busca{% endif %}
+  </h2>
+
+  <!-- Tag filter -->
+  <div class="tag-bar">
+    {% for tag in tags %}
+      <a href="{{ url_for('home.index', tag=tag.name) }}" class="tag-pill">{{ tag.name }}</a>
+    {% endfor %}
+  </div>
+
+  {% if videos %}
+    <div class="video-list">
+      {% for video in videos %}
+        <div class="video-list-item">
+          <a href="{{ url_for('video.watch', video_id=video.id) }}" class="list-thumb">
+            {% if video.thumbnail_url %}
+              <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" loading="lazy">
+            {% else %}
+              <div class="thumb-placeholder">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            {% endif %}
+            <span class="duration-badge">{{ video.duration_str }}</span>
+          </a>
+          <div class="list-info">
+            <a href="{{ url_for('video.watch', video_id=video.id) }}" class="list-title">{{ video.title }}</a>
+            <a href="{{ url_for('channel.canal', channel_id=video.channel.id) if video.channel else '#' }}" class="list-channel">
+              {{ video.channel.name if video.channel else '' }}
+            </a>
+            <span class="list-stats">{{ video.views_fmt }} views · {{ video.age_str }}</span>
+            {% if video.description %}
+              <p class="list-desc">{{ video.description[:150] }}{% if video.description|length > 150 %}…{% endif %}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% elif query %}
+    <div class="empty-state">
+      <p>Nenhum vídeo encontrado para "{{ query }}".</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

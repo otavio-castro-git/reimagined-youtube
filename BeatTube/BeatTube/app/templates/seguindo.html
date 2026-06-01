@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — Seguindo{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_seguindo.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="seguindo-header">
+    <h2><span>•</span> Artistas que você segue</h2>
+    <p class="seguindo-sub">{{ artists|length }} artista{{ 's' if artists|length != 1 else '' }}</p>
+</div>
+
+{% if artists %}
+<div class="seguindo-grid">
+    {% for artist in artists %}
+    <div class="artist-card">
+        <a href="{{ url_for('music.artist_detail', artist_id=artist.id) }}" class="artist-card-link">
+            <div class="artist-avatar-wrap">
+                <img
+                    src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}"
+                    alt="{{ artist.name }}"
+                    class="artist-avatar">
+            </div>
+            <p class="artist-nome">{{ artist.name }}</p>
+            <p class="artist-tipo">Artista</p>
+        </a>
+        <button
+            class="btn-seguir ativo"
+            data-artist-id="{{ artist.id }}"
+            title="Deixar de seguir">
+            <span class="material-symbols-outlined">check</span>
+            Seguindo
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="seguindo-vazio">
+    <span class="material-symbols-outlined">group</span>
+    <p>Você ainda não segue nenhum artista.</p>
+    <a href="{{ url_for('music.tendencias') }}">Descobrir artistas</a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll(".btn-seguir").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const artistId = btn.dataset.artistId;
+        const r = await fetch(`/api/seguir/${artistId}`, { method: "POST" });
+        const data = await r.json();
+        if (!data.seguindo) {
+            // remove card com animação
+            const card = btn.closest(".artist-card");
+            card.style.transition = "opacity 0.3s, transform 0.3s";
+            card.style.opacity = "0";
+            card.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                card.remove();
+                const remaining = document.querySelectorAll(".artist-card").length;
+                const sub = document.querySelector(".seguindo-sub");
+                if (sub) sub.textContent = `${remaining} artista${remaining !== 1 ? 's' : ''}`;
+                if (remaining === 0) location.reload();
+            }, 300);
+        }
+    });
+});
+</script>
+{% endblock %}

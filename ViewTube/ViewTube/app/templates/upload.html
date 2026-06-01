@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Enviar vídeo — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container upload-page">
+  <h2 class="page-title">Enviar vídeo</h2>
+
+  {% if not channel %}
+    <div class="notice-box">
+      <p>Você precisa criar um canal antes de enviar vídeos.</p>
+      <button class="btn-primary" id="openCreateChannel">Criar canal</button>
+    </div>
+  {% else %}
+    <form id="uploadForm" enctype="multipart/form-data">
+      <div class="upload-drop" id="uploadDrop">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p>Arraste o vídeo aqui ou <label class="link-btn" for="videoFile">selecione um arquivo</label></p>
+        <small>MP4, WebM, MOV — máx. 2 GB</small>
+        <input type="file" id="videoFile" name="video" accept="video/*" required hidden>
+      </div>
+      <div id="videoPreviewWrap" class="hidden">
+        <video id="videoPreview" controls></video>
+        <p id="videoFileName"></p>
+      </div>
+
+      <div class="form-group">
+        <label>Título *</label>
+        <input type="text" name="title" required maxlength="255" placeholder="Título do vídeo">
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea name="description" rows="4" placeholder="Sobre o que é este vídeo…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Thumbnail</label>
+        <input type="file" name="thumbnail" accept="image/*" id="thumbFile">
+        <img id="thumbPreview" class="hidden" style="max-width:320px;margin-top:.5rem;border-radius:8px">
+      </div>
+      <div class="form-group">
+        <label>Categorias</label>
+        <div class="tag-checkboxes">
+          {% for tag in tags %}
+            <label class="tag-check">
+              <input type="checkbox" name="tags" value="{{ tag.id }}">
+              {{ tag.name }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="upload-progress hidden" id="uploadProgress">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <span id="progressLabel">Enviando…</span>
+      </div>
+
+      <div class="form-error" id="uploadError"></div>
+      <button type="submit" class="btn-primary btn-large">Publicar vídeo</button>
+    </form>
+  {% endif %}
+</div>
+
+<!-- Modal criar canal -->
+<div class="modal-overlay hidden" id="modalCreateChannel">
+  <div class="modal">
+    <button class="modal-close" data-close="modalCreateChannel">✕</button>
+    <h2>Criar canal</h2>
+    <form id="createChannelForm">
+      <input type="text" name="name" placeholder="Nome do canal" required maxlength="150">
+      <textarea name="description" placeholder="Descrição (opcional)" rows="3"></textarea>
+      <button type="submit" class="btn-primary">Criar</button>
+    </form>
+    <div class="form-error" id="channelError"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

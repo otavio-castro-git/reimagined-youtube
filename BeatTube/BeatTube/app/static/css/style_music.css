@@ -1,0 +1,211 @@
+/* ====================================================
+   MUSIC PAGE  —  /musica/<id>
+   ==================================================== */
+
+/* ── HERO ──────────────────────────────────────────── */
+.music-page {
+  max-width: 1200px;
+}
+
+.music-hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  padding: 48px 32px 32px;
+  background: linear-gradient(to bottom, #ff6600 0%, #1a0800 60%, #070200 100%);
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 32px;
+}
+
+.music-cover {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  flex-shrink: 0;
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 4px;
+  min-width: 0;
+}
+
+.music-type {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.7);
+}
+
+.music-title {
+  color: white;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.music-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+}
+
+.music-meta .sep { color: rgba(255,255,255,0.4); }
+
+.artist-link,
+.album-link {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.artist-link:hover,
+.album-link:hover {
+  color: #ff9944;
+  text-decoration: underline;
+}
+
+/* ── ACTIONS ───────────────────────────────────────── */
+.music-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.play-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.play-btn:hover {
+  background: #ff7a1a;
+  transform: scale(1.04);
+  box-shadow: 0 4px 20px rgba(255,102,0,0.4);
+}
+
+.play-btn .material-symbols-outlined { font-size: 1.5rem; }
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, color 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+.action-btn.liked,
+.action-btn.liked:hover {
+  color: #ff6600;
+  background: rgba(255,102,0,0.15);
+}
+
+.action-btn .material-symbols-outlined { font-size: 1.4rem; }
+
+/* ── SEÇÃO MÚSICAS RELACIONADAS ────────────────────── */
+.secao {
+  padding: 0 32px 40px;
+}
+
+.secao h2 {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 18px 0;
+}
+
+.secao h2 span { color: #ff6600; }
+
+.ouvir_novamente {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.musica {
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: #B3B3B3;
+  border-radius: 12px;
+  padding: 8px;
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.musica:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-3px);
+}
+
+.musica .capa {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.musica .info { width: 100%; }
+
+.nome_musica {
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nome_artista {
+  font-size: 0.78rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* MODO CLARO */
+html[data-tema="claro"] .music-title { color: white !important; }
+html[data-tema="claro"] .secao h2 { color: #1a1a1a !important; }
+html[data-tema="claro"] .musica:hover { background-color: #eeeeee !important; }
+html[data-tema="claro"] .nome_musica { color: #1a1a1a !important; }

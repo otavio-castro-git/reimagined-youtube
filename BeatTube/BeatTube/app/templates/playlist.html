@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — Playlists{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
+<style>
+/* ── CROP OVERLAY ─────────────────────────────────────── */
+#cropOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+#cropWrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111;
+  cursor: crosshair;
+}
+#cropImg {
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: top left;
+  user-select: none;
+  pointer-events: none;
+}
+#cropBox {
+  position: absolute;
+  border: 3px solid #ff6600;
+  border-radius: 4px;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+  cursor: move;
+}
+.crop-actions { display: flex; gap: 12px; }
+.crop-actions button {
+  padding: 10px 24px;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#btnConfirmCrop  { background: #ff6600; color: white; }
+#btnConfirmCrop:hover  { background: #ff7a1a; }
+#btnCancelCrop   { background: #222; color: white; border: 1px solid #444; }
+#btnCancelCrop:hover   { background: #333; }
+
+/* ── PREVIEW CAPA NO MODAL ──── */
+.cover-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+#coverPreview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px dashed #444;
+  display: block;
+  background: #111;
+}
+#coverPreview.has-img { border-style: solid; border-color: #ff6600; }
+.cover-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #B3B3B3;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.cover-upload-btn:hover { border-color: #ff6600; color: #ff6600; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="playlists-header">
+    <h2><span>•</span> Suas Playlists</h2>
+</div>
+
+<div class="playlists-grid">
+
+    <!-- CARD CRIAR PLAYLIST -->
+    {% if current_user.is_authenticated %}
+    <button class="playlist-card-criar" id="btnCriarPlaylist">
+        <div class="criar-capa-card">
+            <span class="material-symbols-outlined">add</span>
+        </div>
+        <p class="criar-label">Nova playlist</p>
+        <p class="criar-sub">Criar</p>
+    </button>
+    {% endif %}
+
+    <!-- CARDS DE PLAYLISTS EXISTENTES -->
+    {% for pl in playlists %}
+    <a href="{{ url_for('playlist.playlist_detail', playlist_id=pl.id) }}" class="playlist-card">
+        <img src="{{ pl.cover_url or url_for('static', filename='img/playlist1.jpg') }}"
+             alt="{{ pl.name }}" class="playlist-cover">
+        <div class="playlist-info">
+            <p class="playlist-nome">{{ pl.name }}</p>
+            <p class="playlist-qtd">{{ pl.song_count }} músicas</p>
+        </div>
+    </a>
+    {% endfor %}
+
+    {% if not playlists and not current_user.is_authenticated %}
+    <div class="sem-playlists">
+        <span class="material-symbols-outlined">playlist_play</span>
+        <p>Você ainda não tem playlists.</p>
+        <p><a href="#" id="abrirLogin">Faça login</a> para criar playlists.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- MODAL CRIAR PLAYLIST -->
+{% if current_user.is_authenticated %}
+<div class="modal-overlay" id="modalCriarPlaylist" style="display:none">
+    <div class="modal">
+        <p class="modal-title">Nova Playlist</p>
+
+        <!-- CAPA -->
+        <div class="cover-preview-wrap">
+            <img id="coverPreview" src="" alt="Capa">
+            <button type="button" class="cover-upload-btn" id="btnEscolherCapa">
+                <span class="material-symbols-outlined" style="font-size:1rem">add_photo_alternate</span>
+                Escolher capa
+            </button>
+            <input type="file" id="inputCapa" accept="image/*" style="display:none">
+        </div>
+
+        <div class="field">
+            <label>Nome</label>
+            <input type="text" id="playlistNome" placeholder="Nome da playlist">
+        </div>
+        <div class="field">
+            <label>Descrição (opcional)</label>
+            <input type="text" id="playlistDesc" placeholder="Descrição">
+        </div>
+        <button class="entrar-btn" id="btnSalvarPlaylist">Criar</button>
+        <button class="fechar-btn" id="fecharModalPlaylist">Cancelar</button>
+        <p id="playlistErro" class="form-erro"></p>
+    </div>
+</div>
+
+<!-- CROP OVERLAY -->
+<div id="cropOverlay">
+    <p style="color:white;font-size:0.9rem;margin:0;">Arraste para posicionar a capa</p>
+    <div id="cropWrapper">
+        <img id="cropImg" src="" alt="">
+        <div id="cropBox"></div>
+    </div>
+    <div class="crop-actions">
+        <button id="btnConfirmCrop">Confirmar</button>
+        <button id="btnCancelCrop">Cancelar</button>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ════════════════════════════════════════════════
+   MODAL CRIAR PLAYLIST
+   ════════════════════════════════════════════════ */
+const modalPl = document.getElementById("modalCriarPlaylist");
+
+document.getElementById("btnCriarPlaylist")?.addEventListener("click", () => {
+    modalPl.style.display = "flex";
+});
+document.getElementById("fecharModalPlaylist")?.addEventListener("click", () => {
+    modalPl.style.display = "none";
+});
+modalPl?.addEventListener("click", (e) => {
+    if (e.target === modalPl) modalPl.style.display = "none";
+});
+
+/* ════════════════════════════════════════════════
+   CROP DE CAPA
+   ════════════════════════════════════════════════ */
+let croppedBlob = null;
+
+const inputCapa      = document.getElementById("inputCapa");
+const btnEscolherCapa= document.getElementById("btnEscolherCapa");
+const coverPreview   = document.getElementById("coverPreview");
+const cropOverlay    = document.getElementById("cropOverlay");
+const cropWrapper    = document.getElementById("cropWrapper");
+const cropImg        = document.getElementById("cropImg");
+const cropBox        = document.getElementById("cropBox");
+
+btnEscolherCapa?.addEventListener("click", () => inputCapa.click());
+
+inputCapa?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        initCrop(ev.target.result);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";   // reset para permitir reenvio do mesmo arquivo
+});
+
+/* ── Variáveis do crop ── */
+let scale = 1;
+let boxX = 40, boxY = 40, boxSize = 240;
+const WRAPPER = 320;
+
+function initCrop(src) {
+    const img = new Image();
+    img.onload = () => {
+        // Escala a imagem para caber no wrapper mantendo proporção
+        const scaleW = WRAPPER / img.width;
+        const scaleH = WRAPPER / img.height;
+        scale = Math.max(scaleW, scaleH);
+
+        cropImg.src = src;
+        cropImg.style.width  = (img.width  * scale) + "px";
+        cropImg.style.height = (img.height * scale) + "px";
+        cropImg.style.transform = "translate(0, 0)";
+
+        // Box inicial centralizado
+        boxSize = Math.min(240, WRAPPER * 0.75);
+        boxX = (WRAPPER - boxSize) / 2;
+        boxY = (WRAPPER - boxSize) / 2;
+        renderBox();
+
+        cropOverlay.style.display = "flex";
+    };
+    img.src = src;
+}
+
+function renderBox() {
+    // Clamp dentro do wrapper
+    boxX = Math.max(0, Math.min(boxX, WRAPPER - boxSize));
+    boxY = Math.max(0, Math.min(boxY, WRAPPER - boxSize));
+    cropBox.style.left   = boxX + "px";
+    cropBox.style.top    = boxY + "px";
+    cropBox.style.width  = boxSize + "px";
+    cropBox.style.height = boxSize + "px";
+}
+
+/* Arrastar o cropBox */
+let dragging = false, startX, startY, startBoxX, startBoxY;
+cropBox.addEventListener("mousedown", (e) => {
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    startBoxX = boxX;   startBoxY = boxY;
+    e.preventDefault();
+});
+document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    boxX = startBoxX + (e.clientX - startX);
+    boxY = startBoxY + (e.clientY - startY);
+    renderBox();
+});
+document.addEventListener("mouseup", () => { dragging = false; });
+
+/* Touch support */
+cropBox.addEventListener("touchstart", (e) => {
+    dragging = true;
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    startBoxX = boxX;   startBoxY = boxY;
+}, { passive: true });
+document.addEventListener("touchmove", (e) => {
+    if (!dragging) return;
+    const t = e.touches[0];
+    boxX = startBoxX + (t.clientX - startX);
+    boxY = startBoxY + (t.clientY - startY);
+    renderBox();
+}, { passive: true });
+document.addEventListener("touchend", () => { dragging = false; });
+
+document.getElementById("btnConfirmCrop")?.addEventListener("click", () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 400; canvas.height = 400;
+    const ctx = canvas.getContext("2d");
+
+    const imgEl = cropImg;
+    const imgW  = parseFloat(imgEl.style.width);
+    const imgH  = parseFloat(imgEl.style.height);
+
+    // Rect da imagem dentro do wrapper
+    const wrapRect = cropWrapper.getBoundingClientRect();
+    const imgRect  = imgEl.getBoundingClientRect();
+    const imgOffX  = imgRect.left - wrapRect.left;
+    const imgOffY  = imgRect.top  - wrapRect.top;
+
+    // Coordenadas do crop na imagem original (sem scale)
+    const srcX = (boxX - imgOffX) / scale;
+    const srcY = (boxY - imgOffY) / scale;
+    const srcSize = boxSize / scale;
+
+    const realImg = new Image();
+    realImg.onload = () => {
+        ctx.drawImage(realImg, srcX, srcY, srcSize, srcSize, 0, 0, 400, 400);
+        canvas.toBlob((blob) => {
+            croppedBlob = blob;
+            const url = URL.createObjectURL(blob);
+            coverPreview.src = url;
+            coverPreview.classList.add("has-img");
+            cropOverlay.style.display = "none";
+        }, "image/jpeg", 0.92);
+    };
+    realImg.src = cropImg.src;
+});
+
+document.getElementById("btnCancelCrop")?.addEventListener("click", () => {
+    cropOverlay.style.display = "none";
+    croppedBlob = null;
+});
+
+/* ════════════════════════════════════════════════
+   SALVAR PLAYLIST (multipart com capa opcional)
+   ════════════════════════════════════════════════ */
+document.getElementById("btnSalvarPlaylist")?.addEventListener("click", async () => {
+    const nome = document.getElementById("playlistNome").value.trim();
+    const desc = document.getElementById("playlistDesc").value.trim();
+    const erro = document.getElementById("playlistErro");
+    erro.textContent = "";
+
+    if (!nome) {
+        erro.textContent = "O nome é obrigatório.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", nome);
+    formData.append("description", desc);
+    if (croppedBlob) {
+        formData.append("cover", croppedBlob, "cover.jpg");
+    }
+
+    const r = await fetch("/api/playlist/criar", {
+        method: "POST",
+        body: formData,
+    });
+    const data = await r.json();
+    if (data.ok) {
+        location.reload();
+    } else {
+        erro.textContent = data.error || "Erro ao criar playlist.";
+    }
+});
+</script>
+{% endblock %}

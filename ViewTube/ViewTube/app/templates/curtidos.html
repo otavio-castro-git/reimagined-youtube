@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Vídeos Curtidos — ViewTube{% endblock %}
+{% block content %}
+<div class="page-container">
+  <h2 class="page-title">👍 Vídeos Curtidos</h2>
+  {% if videos %}
+    <div class="video-grid">
+      {% for video in videos %}
+        {% include "_video_card.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><p>Você ainda não curtiu nenhum vídeo.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}BeatTube — {{ album.title }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
+<style>
+.musica-link {
+    position: relative;
+    cursor: pointer;
+}
+.musica-play-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 28px;
+    color: #ff6600;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.musica-link:hover .musica-play-icon {
+    opacity: 1;
+}
+.musica-link:hover .mini-capa {
+    opacity: 0.6;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="principal">
+    <div class="parte-cima">
+        <img src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ album.title }}" class="album-cover">
+        <div class="album-info">
+            <p class="tipo">ÁLBUM</p>
+            <h1 class="album-titulo">{{ album.title }}</h1>
+            <p class="album-artista">
+                {% if album.artist %}
+                <a href="{{ url_for('music.artist_detail', artist_id=album.artist.id) }}" style="color:white;text-decoration:none;">
+                    {{ album.artist.name }}
+                </a>
+                {% endif %}
+            </p>
+            <p class="views">{{ songs|length }} faixas</p>
+        </div>
+    </div>
+
+    <div class="principal-baixo">
+        {% for song in songs %}
+        <a href="#" class="musica-link play-direct-btn"
+           data-song-id="{{ song.id }}"
+           data-song-title="{{ song.title }}"
+           data-song-artist="{{ song.main_artist.name if song.main_artist else '' }}"
+           data-song-cover="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}">
+            <span class="musica-play-icon material-symbols-outlined">play_circle</span>
+            <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" class="mini-capa">
+            <div class="musica-info">
+                <p class="musica-titulo">{{ song.title }}</p>
+                <p class="musica-artista">{{ song.main_artist.name if song.main_artist else '' }}</p>
+            </div>
+            <p class="musica-album">{{ album.title }}</p>
+            <p class="musica-tempo">{{ song.duration_str }}</p>
+        </a>
+        {% else %}
+        <p style="color:#B3B3B3;">Nenhuma faixa neste álbum.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
