@@ -63,12 +63,20 @@ def artist_detail(artist_id):
     popular_songs = list(enumerate(all_songs[:5], start=1))
     singles = all_songs[5:11]  # próximas como singles
 
+    is_following = False
+    if current_user.is_authenticated:
+        from ..models import UserFollowsArtist
+        is_following = UserFollowsArtist.query.filter_by(
+            user_id=current_user.id, artist_id=artist_id
+        ).first() is not None
+
     return render_template(
         "artist.html",
         artist=artist,
         albums=albums,
         popular_songs=popular_songs,
         singles=singles,
+        is_following=is_following,
     )
 
 

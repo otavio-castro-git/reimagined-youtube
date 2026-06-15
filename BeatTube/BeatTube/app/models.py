@@ -82,6 +82,7 @@ class Artist(db.Model):
     image_url = db.Column(db.String(500), nullable=True)
 
     albums    = db.relationship("Album", back_populates="artist", lazy="dynamic")
+    followers = db.relationship("UserFollowsArtist", backref="artist", lazy="dynamic")
     
 
 

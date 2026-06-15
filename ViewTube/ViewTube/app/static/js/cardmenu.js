@@ -4,7 +4,7 @@ let _menuVideoId   = null;
 let _menuVideoTitle = null;
 const menu    = document.getElementById('cardContextMenu');
 const modal   = document.getElementById('modalSavePlaylist');
-const toast   = document.getElementById('cardToast');
+let cardToast   = document.getElementById('cardToast');
 
 /* ── abre o menu posicionado perto do botão ── */
 function openCardMenu(event, videoId, videoTitle) {
@@ -130,13 +130,13 @@ document.getElementById('ccmNotRecommend').addEventListener('click', () => {
 /* ── Toast helper ── */
 let _toastTimer = null;
 function showToast(msg) {
-  toast.textContent = msg;
-  toast.style.display = 'block';
-  toast.classList.add('visible');
+  cardToast.textContent = msg;
+  cardToast.style.display = 'block';
+  cardToast.classList.add('visible');
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => {
-    toast.classList.remove('visible');
-    setTimeout(() => { toast.style.display = 'none'; }, 300);
+    cardToast.classList.remove('visible');
+    setTimeout(() => { cardToast.style.display = 'none'; }, 300);
   }, 2800);
 }
 

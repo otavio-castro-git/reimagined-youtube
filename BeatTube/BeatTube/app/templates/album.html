@@ -3,67 +3,328 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
 <style>
-.musica-link {
-    position: relative;
-    cursor: pointer;
-}
+/* play icon hover */
+.musica-link { position: relative; cursor: pointer; }
 .musica-play-icon {
-    position: absolute;
-    left: 10px;
-    font-size: 28px;
-    color: #ff6600;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    z-index: 2;
+    position: absolute; left: 10px;
+    font-size: 28px; color: #ff6600;
+    opacity: 0; transition: opacity 0.2s;
+    pointer-events: none; z-index: 2;
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
-.musica-link:hover .musica-play-icon {
-    opacity: 1;
+.musica-link:hover .musica-play-icon { opacity: 1; }
+.musica-link:hover .mini-capa { opacity: 0.6; }
+
+/* botão tocar álbum */
+.album-play-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 14px; padding: 11px 26px;
+    background: #ff6600; color: white; border: none;
+    border-radius: 50px; font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
-.musica-link:hover .mini-capa {
-    opacity: 0.6;
+.album-play-btn:hover {
+    background: #ff7a1a; transform: scale(1.04);
+    box-shadow: 0 4px 20px rgba(255,102,0,0.4);
 }
+
+/* menu de contexto */
+.ctx-menu {
+    position: fixed; z-index: 8000;
+    background: #1a1a1a; border: 1px solid #333;
+    border-radius: 12px; padding: 6px 0;
+    min-width: 200px; display: none;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+.ctx-menu.show { display: block; }
+.ctx-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; color: #ccc;
+    font-size: 0.9rem; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    border: none; background: none;
+    width: 100%; text-align: left;
+    font-family: 'Poppins', sans-serif;
+}
+.ctx-item:hover { background: #2a2a2a; color: white; }
+.ctx-item .material-symbols-outlined { font-size: 1.1rem; color: #ff6600; }
+.ctx-divider { border: none; border-top: 1px solid #2a2a2a; margin: 4px 0; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="principal">
     <div class="parte-cima">
-        <img src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ album.title }}" class="album-cover">
+        <img src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+             alt="{{ album.title }}" class="album-cover">
         <div class="album-info">
             <p class="tipo">ÁLBUM</p>
             <h1 class="album-titulo">{{ album.title }}</h1>
             <p class="album-artista">
                 {% if album.artist %}
-                <a href="{{ url_for('music.artist_detail', artist_id=album.artist.id) }}" style="color:white;text-decoration:none;">
-                    {{ album.artist.name }}
-                </a>
+                <a href="{{ url_for('music.artist_detail', artist_id=album.artist.id) }}"
+                   style="color:white;text-decoration:none;">{{ album.artist.name }}</a>
                 {% endif %}
             </p>
             <p class="views">{{ songs|length }} faixas</p>
+            {% if songs %}
+            <button class="album-play-btn" id="btnPlayAlbum">
+                <span class="material-symbols-outlined">play_circle</span> Tocar álbum
+            </button>
+            {% endif %}
         </div>
     </div>
 
     <div class="principal-baixo">
         {% for song in songs %}
-        <a href="#" class="musica-link play-direct-btn"
-           data-song-id="{{ song.id }}"
-           data-song-title="{{ song.title }}"
-           data-song-artist="{{ song.main_artist.name if song.main_artist else '' }}"
-           data-song-cover="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}">
+        <div class="musica-link"
+             data-song-id="{{ song.id }}"
+             data-song-title="{{ song.title }}"
+             data-song-artist="{{ song.main_artist.name if song.main_artist else '' }}"
+             data-song-cover="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+             data-artist-id="{{ song.main_artist.id if song.main_artist else '' }}"
+             data-artist-url="{{ url_for('music.artist_detail', artist_id=song.main_artist.id) if song.main_artist else '#' }}">
             <span class="musica-play-icon material-symbols-outlined">play_circle</span>
-            <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" class="mini-capa">
+            <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+                 alt="{{ song.title }}" class="mini-capa">
             <div class="musica-info">
                 <p class="musica-titulo">{{ song.title }}</p>
                 <p class="musica-artista">{{ song.main_artist.name if song.main_artist else '' }}</p>
             </div>
             <p class="musica-album">{{ album.title }}</p>
             <p class="musica-tempo">{{ song.duration_str }}</p>
-        </a>
+            <button class="musica-opcoes ctx-trigger" title="Mais opções">
+                <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+        </div>
         {% else %}
         <p style="color:#B3B3B3;">Nenhuma faixa neste álbum.</p>
         {% endfor %}
     </div>
 </div>
+
+<!-- MENU DE CONTEXTO -->
+<div class="ctx-menu" id="ctxMenu">
+    <button class="ctx-item" id="ctxPlay">
+        <span class="material-symbols-outlined">play_circle</span> Tocar
+    </button>
+    <button class="ctx-item" id="ctxAddPlaylist">
+        <span class="material-symbols-outlined">playlist_add</span> Adicionar à playlist
+    </button>
+    {% if current_user.is_authenticated and current_user.is_premium %}
+    <button class="ctx-item" id="ctxDownload">
+        <span class="material-symbols-outlined">download</span> Baixar
+    </button>
+    {% endif %}
+    <hr class="ctx-divider">
+    <button class="ctx-item" id="ctxSaberMais">
+        <span class="material-symbols-outlined">info</span> Saber mais
+    </button>
+    <button class="ctx-item" id="ctxVerArtista">
+        <span class="material-symbols-outlined">person</span> Ver artista
+    </button>
+</div>
+
+<!-- MODAL ADD PLAYLIST -->
+{% if current_user.is_authenticated %}
+<div class="modal-overlay" id="modalAddPlaylist" style="display:none">
+    <div class="modal">
+        <p class="modal-title">Adicionar à playlist</p>
+        <div id="playlistListContainer">
+            <p style="color:#666;text-align:center;padding:20px 0;">Carregando...</p>
+        </div>
+        <button class="fechar-btn" id="fecharAddPlaylist">Fechar</button>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Todas as músicas do álbum em ordem para o player de fila
+const ALBUM_SONGS = [
+    {% for song in songs %}
+    { id: {{ song.id }}, title: {{ song.title|tojson }},
+      artist: {{ (song.main_artist.name if song.main_artist else '')|tojson }},
+      cover: {{ (song.cover_url or url_for('static', filename='img/capa.jpeg'))|tojson }},
+      file_url: {{ song.file_url|tojson }} },
+    {% endfor %}
+];
+
+const DEFAULT_COVER = "{{ url_for('static', filename='img/playlist1.jpg') }}";
+
+/* ══════════════════════════════════════════════
+   FILA DO ÁLBUM
+   ══════════════════════════════════════════════ */
+let albumQueue = [];
+let albumQueueIndex = -1;
+
+function playAlbumFrom(index) {
+    albumQueue = [...ALBUM_SONGS];
+    albumQueueIndex = index;
+    playQueueItem();
+}
+
+function playQueueItem() {
+    if (albumQueueIndex < 0 || albumQueueIndex >= albumQueue.length) return;
+    const s = albumQueue[albumQueueIndex];
+    // Usa o player global do base.html
+    if (window.btCarregarMusica) window.btCarregarMusica(s.id);
+}
+
+// Expõe funções de próxima/anterior para o player
+window.btQueueNext = function() {
+    if (albumQueue.length && albumQueueIndex < albumQueue.length - 1) {
+        albumQueueIndex++;
+        playQueueItem();
+        return true;
+    }
+    return false;
+};
+window.btQueuePrev = function() {
+    if (albumQueue.length && albumQueueIndex > 0) {
+        albumQueueIndex--;
+        playQueueItem();
+        return true;
+    }
+    return false;
+};
+
+// Tocar álbum inteiro do começo
+document.getElementById("btnPlayAlbum")?.addEventListener("click", () => {
+    playAlbumFrom(0);
+});
+
+/* ══════════════════════════════════════════════
+   CLIQUE DIRETO NA LINHA (fora do botão ...)
+   ══════════════════════════════════════════════ */
+document.querySelectorAll(".musica-link").forEach((row, idx) => {
+    row.addEventListener("click", (e) => {
+        if (e.target.closest(".ctx-trigger")) return;
+        playAlbumFrom(idx);
+    });
+});
+
+/* ══════════════════════════════════════════════
+   MENU DE CONTEXTO (3 pontos)
+   ══════════════════════════════════════════════ */
+const ctxMenu = document.getElementById("ctxMenu");
+let ctxSong = null;
+let ctxIdx  = -1;
+
+document.querySelectorAll(".ctx-trigger").forEach((btn, idx) => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const row = btn.closest(".musica-link");
+        ctxSong = {
+            id:        parseInt(row.dataset.songId),
+            title:     row.dataset.songTitle,
+            artist:    row.dataset.songArtist,
+            cover:     row.dataset.songCover,
+            artistUrl: row.dataset.artistUrl,
+        };
+        ctxIdx = idx;
+
+        // Posiciona o menu
+        const rect = btn.getBoundingClientRect();
+        ctxMenu.style.top  = (rect.bottom + 4) + "px";
+        ctxMenu.style.left = Math.min(rect.left, window.innerWidth - 220) + "px";
+        ctxMenu.classList.add("show");
+    });
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".ctx-menu") && !e.target.closest(".ctx-trigger")) {
+        ctxMenu.classList.remove("show");
+    }
+});
+
+document.getElementById("ctxPlay")?.addEventListener("click", () => {
+    if (ctxIdx >= 0) playAlbumFrom(ctxIdx);
+    ctxMenu.classList.remove("show");
+});
+
+document.getElementById("ctxSaberMais")?.addEventListener("click", () => {
+    if (ctxSong) window.location.href = `/musica/${ctxSong.id}`;
+    ctxMenu.classList.remove("show");
+});
+
+document.getElementById("ctxVerArtista")?.addEventListener("click", () => {
+    if (ctxSong?.artistUrl) window.location.href = ctxSong.artistUrl;
+    ctxMenu.classList.remove("show");
+});
+
+document.getElementById("ctxDownload")?.addEventListener("click", () => {
+    if (ctxSong) {
+        const a = document.createElement("a");
+        a.href = `/api/song/${ctxSong.id}/download`;
+        a.download = ctxSong.title + ".mp3";
+        a.click();
+    }
+    ctxMenu.classList.remove("show");
+});
+
+/* ══════════════════════════════════════════════
+   MODAL ADD PLAYLIST
+   ══════════════════════════════════════════════ */
+const modalAddPl  = document.getElementById("modalAddPlaylist");
+const fecharAddPl = document.getElementById("fecharAddPlaylist");
+
+document.getElementById("ctxAddPlaylist")?.addEventListener("click", () => {
+    ctxMenu.classList.remove("show");
+    if (!ctxSong) return;
+    modalAddPl.style.display = "flex";
+    carregarPlaylists(ctxSong.id);
+});
+
+fecharAddPl?.addEventListener("click", () => { modalAddPl.style.display = "none"; });
+modalAddPl?.addEventListener("click", (e) => { if (e.target === modalAddPl) modalAddPl.style.display = "none"; });
+
+async function carregarPlaylists(songId) {
+    const container = document.getElementById("playlistListContainer");
+    container.innerHTML = `<p style="color:#666;text-align:center;padding:20px 0;">Carregando...</p>`;
+    try {
+        const r    = await fetch(`/api/playlists/minhas?song_id=${songId}`);
+        const data = await r.json();
+        if (!data.playlists || data.playlists.length === 0) {
+            container.innerHTML = `<p style="color:#666;text-align:center;padding:20px 0;">
+                Nenhuma playlist ainda. <a href="/playlists" style="color:#ff6600;">Criar</a></p>`;
+            return;
+        }
+        container.innerHTML = data.playlists.map(pl => `
+            <button class="playlist-list-item ${pl.has_song ? 'added' : ''}"
+                    data-playlist-id="${pl.id}" data-has="${pl.has_song ? '1' : '0'}"
+                    data-song-id="${songId}">
+                <img src="${pl.cover_url || DEFAULT_COVER}" alt="${pl.name}">
+                <div class="pl-info">
+                    <div class="pl-name">${pl.name}</div>
+                    <div class="pl-qtd">${pl.song_count} música${pl.song_count !== 1 ? 's' : ''}</div>
+                </div>
+                <span class="material-symbols-outlined pl-check">check_circle</span>
+            </button>
+        `).join("");
+
+        container.querySelectorAll(".playlist-list-item").forEach(item => {
+            item.addEventListener("click", async () => {
+                const plId  = item.dataset.playlistId;
+                const has   = item.dataset.has === "1";
+                const sid   = item.dataset.songId;
+                const r     = await fetch(`/api/playlist/${plId}/${has ? 'remove' : 'add'}/${sid}`, { method: "POST" });
+                const data  = await r.json();
+                if (data.ok) {
+                    item.classList.toggle("added", !!data.added);
+                    item.dataset.has = data.added ? "1" : "0";
+                    const qtd = item.querySelector(".pl-qtd");
+                    const n = parseInt(qtd.textContent) + (data.added ? 1 : -1);
+                    qtd.textContent = `${Math.max(0,n)} música${n !== 1 ? 's' : ''}`;
+                }
+            });
+        });
+    } catch(e) {
+        container.innerHTML = `<p style="color:#ff4444;text-align:center;">Erro ao carregar playlists.</p>`;
+    }
+}
+</script>
 {% endblock %}

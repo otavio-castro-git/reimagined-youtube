@@ -12,26 +12,49 @@
 </div>
 
 {% if artists %}
-<div class="seguindo-grid">
+<div class="seguindo-feed">
     {% for artist in artists %}
-    <div class="artist-card">
-        <a href="{{ url_for('music.artist_detail', artist_id=artist.id) }}" class="artist-card-link">
-            <div class="artist-avatar-wrap">
-                <img
-                    src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}"
-                    alt="{{ artist.name }}"
-                    class="artist-avatar">
-            </div>
-            <p class="artist-nome">{{ artist.name }}</p>
-            <p class="artist-tipo">Artista</p>
-        </a>
-        <button
-            class="btn-seguir ativo"
-            data-artist-id="{{ artist.id }}"
-            title="Deixar de seguir">
-            <span class="material-symbols-outlined">check</span>
-            Seguindo
-        </button>
+    <div class="artist-row" data-artist-id="{{ artist.id }}">
+
+        <!-- CABEÇALHO DO ARTISTA -->
+        <div class="artist-row-header">
+            <a href="{{ url_for('music.artist_detail', artist_id=artist.id) }}" class="artist-row-link">
+                <img src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}"
+                     alt="{{ artist.name }}" class="artist-row-avatar">
+                <div>
+                    <p class="artist-row-nome">{{ artist.name }}</p>
+                    <p class="artist-row-sub">{{ artist.follower_count or 0 }} seguidores</p>
+                </div>
+            </a>
+            <button class="btn-seguir ativo unfollow-btn"
+                    data-artist-id="{{ artist.id }}" title="Deixar de seguir">
+                <span class="material-symbols-outlined">check</span> Seguindo
+            </button>
+        </div>
+
+        <!-- 3 ÚLTIMAS MÚSICAS -->
+        {% if artist.recent_songs %}
+        <div class="artist-row-songs">
+            {% for song in artist.recent_songs %}
+            <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="song-mini">
+                <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+                     alt="{{ song.title }}" class="song-mini-capa">
+                <div class="song-mini-info">
+                    <p class="song-mini-title">{{ song.title }}</p>
+                    <p class="song-mini-sub">{{ song.duration_str }}</p>
+                </div>
+                <button class="song-mini-play play-song-btn"
+                        data-song-id="{{ song.id }}"
+                        title="Tocar">
+                    <span class="material-symbols-outlined">play_circle</span>
+                </button>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="sem-musicas">Nenhuma música disponível ainda.</p>
+        {% endif %}
+
     </div>
     {% endfor %}
 </div>
@@ -48,25 +71,36 @@
 
 {% block extra_js %}
 <script>
-document.querySelectorAll(".btn-seguir").forEach(btn => {
-    btn.addEventListener("click", async () => {
-        const artistId = btn.dataset.artistId;
-        const r = await fetch(`/api/seguir/${artistId}`, { method: "POST" });
+/* Deixar de seguir */
+document.querySelectorAll(".unfollow-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const id = btn.dataset.artistId;
+        const r = await fetch(`/api/seguir/${id}`, { method: "POST" });
         const data = await r.json();
         if (!data.seguindo) {
-            // remove card com animação
-            const card = btn.closest(".artist-card");
-            card.style.transition = "opacity 0.3s, transform 0.3s";
-            card.style.opacity = "0";
-            card.style.transform = "scale(0.9)";
+            const row = btn.closest(".artist-row");
+            row.style.transition = "opacity 0.3s, transform 0.3s";
+            row.style.opacity = "0";
+            row.style.transform = "translateY(-8px)";
             setTimeout(() => {
-                card.remove();
-                const remaining = document.querySelectorAll(".artist-card").length;
+                row.remove();
+                const remaining = document.querySelectorAll(".artist-row").length;
                 const sub = document.querySelector(".seguindo-sub");
                 if (sub) sub.textContent = `${remaining} artista${remaining !== 1 ? 's' : ''}`;
                 if (remaining === 0) location.reload();
             }, 300);
         }
+    });
+});
+
+/* Tocar música */
+document.querySelectorAll(".song-mini-play").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const songId = btn.dataset.songId;
+        if (window.btCarregarMusica) window.btCarregarMusica(songId);
     });
 });
 </script>

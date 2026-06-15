@@ -1,80 +1,117 @@
 {% extends "base.html" %}
 {% block title %}BeatTube — {{ artist.name }}{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_artist.css') }}">
 {% endblock %}
 
 {% block content %}
 
-<!-- HERO DO ARTISTA -->
-<div class="artist-hero" style="background-image: url('{{ artist.banner_url or url_for('static', filename='img/banner.jpg') }}')">
-    <div class="artist-hero-overlay">
-        <img src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}" alt="{{ artist.name }}" class="artist-avatar">
-        <div class="artist-hero-info">
-            <span class="artist-badge">Artista verificado</span>
-            <h1>{{ artist.name }}</h1>
-            <p class="artist-seguidores">{{ artist.follower_count or 0 }} seguidores</p>
+<div class="artist-page">
+
+    <!-- HERO -->
+    <div class="artist-hero"
+         style="background-image: url('{{ artist.banner_url or url_for('static', filename='img/banner.jpg') }}')">
+        <div class="artist-hero-overlay">
+            <img src="{{ artist.image_url or url_for('static', filename='img/bruno.jpeg') }}"
+                 alt="{{ artist.name }}" class="artist-avatar">
+            <div class="artist-hero-info">
+                <span class="artist-badge">
+                    <span class="material-symbols-outlined">verified</span> Artista verificado
+                </span>
+                <h1>{{ artist.name }}</h1>
+                <p class="artist-seguidores">{{ artist.follower_count or 0 }} seguidores</p>
+                {% if current_user.is_authenticated %}
+                <button class="btn-seguir {% if is_following %}ativo{% endif %}"
+                        id="btnSeguir" data-artist-id="{{ artist.id }}">
+                    {% if is_following %}
+                    <span class="material-symbols-outlined">check</span> Seguindo
+                    {% else %}
+                    <span class="material-symbols-outlined">person_add</span> Seguir
+                    {% endif %}
+                </button>
+                {% endif %}
+            </div>
         </div>
+    </div>
+
+    <div class="artist-body">
+
+        <!-- POPULARES -->
+        {% if popular_songs %}
+        <section class="secao">
+            <h2><span>•</span> Populares</h2>
+            <div class="lista-musicas">
+                {% for i, song in popular_songs %}
+                <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica-linha">
+                    <span class="musica-num">{{ i }}</span>
+                    <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+                         alt="{{ song.title }}" class="musica-linha-capa">
+                    <div class="musica-linha-info">
+                        <p class="nome_musica">{{ song.title }}</p>
+                    </div>
+                    <span class="musica-duracao">{{ song.duration_str }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- ÁLBUNS -->
+        {% if albums %}
+        <section class="secao">
+            <h2><span>•</span> Álbuns</h2>
+            <div class="cards-grid">
+                {% for album in albums %}
+                <a href="{{ url_for('music.album_detail', album_id=album.id) }}" class="card">
+                    <img class="card-capa" src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+                         alt="{{ album.title }}">
+                    <p class="card-nome">{{ album.title }}</p>
+                    <p class="card-sub">{{ album.release_year or 'Álbum' }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- SINGLES -->
+        {% if singles %}
+        <section class="secao">
+            <h2><span>•</span> Singles</h2>
+            <div class="cards-grid">
+                {% for song in singles %}
+                <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="card">
+                    <img class="card-capa" src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}"
+                         alt="{{ song.title }}">
+                    <p class="card-nome">{{ song.title }}</p>
+                    <p class="card-sub">Single</p>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
     </div>
 </div>
 
-<div class="artist-body">
+{% endblock %}
 
-    <!-- MÚSICAS POPULARES -->
-    {% if popular_songs %}
-    <section class="secao">
-        <h2><span>•</span> Populares</h2>
-        <div class="lista-musicas">
-            {% for i, song in popular_songs %}
-            <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica-linha">
-                <span class="musica-num">{{ i }}</span>
-                <img src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" class="musica-linha-capa">
-                <div class="info">
-                    <p class="nome_musica">{{ song.title }}</p>
-                </div>
-                <span class="musica-duracao">{{ song.duration_str }}</span>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- ÁLBUNS -->
-    {% if albums %}
-    <section class="secao">
-        <h2><span>•</span> Álbuns</h2>
-        <div class="ouvir_novamente">
-            {% for album in albums %}
-            <a href="{{ url_for('music.album_detail', album_id=album.id) }}" class="musica">
-                <img class="capa" src="{{ album.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ album.title }}" height="130px">
-                <div class="info">
-                    <p class="nome_musica">{{ album.title }}</p>
-                    <p class="nome_artista">{{ album.release_year or '' }}</p>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- SINGLES -->
-    {% if singles %}
-    <section class="secao">
-        <h2><span>•</span> Singles</h2>
-        <div class="ouvir_novamente">
-            {% for song in singles %}
-            <a href="{{ url_for('music.song_detail', song_id=song.id) }}" class="musica">
-                <img class="capa" src="{{ song.cover_url or url_for('static', filename='img/capa.jpeg') }}" alt="{{ song.title }}" height="130px">
-                <div class="info">
-                    <p class="nome_musica">{{ song.title }}</p>
-                    <p class="nome_artista">{{ song.release_year or '' }}</p>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-</div>
-
+{% block extra_js %}
+<script>
+const btnSeguir = document.getElementById("btnSeguir");
+btnSeguir?.addEventListener("click", async () => {
+    const id = btnSeguir.dataset.artistId;
+    const r = await fetch(`/api/seguir/${id}`, { method: "POST" });
+    const data = await r.json();
+    const ico = btnSeguir.querySelector(".material-symbols-outlined");
+    if (data.seguindo) {
+        btnSeguir.classList.add("ativo");
+        ico.textContent = "check";
+        btnSeguir.childNodes[btnSeguir.childNodes.length - 1].textContent = " Seguindo";
+    } else {
+        btnSeguir.classList.remove("ativo");
+        ico.textContent = "person_add";
+        btnSeguir.childNodes[btnSeguir.childNodes.length - 1].textContent = " Seguir";
+    }
+});
+</script>
 {% endblock %}
