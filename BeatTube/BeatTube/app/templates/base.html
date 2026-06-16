@@ -599,6 +599,11 @@ document.getElementById("btnEnviarPost").addEventListener("click", async () => {
             playerDetailTitle.textContent   = data.title;
             playerDetailArtist.textContent  = data.artist;
 
+            /* tempo total — preenche imediatamente sem esperar o áudio carregar */
+            if (data.duration_sec) {
+                playerTotalTime.textContent = fmt(data.duration_sec);
+            }
+
             /* capa */
             playerAlbumArt.innerHTML = data.cover_url
                 ? `<img src="${data.cover_url}" alt="${data.title}">`
