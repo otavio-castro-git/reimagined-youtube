@@ -77,7 +77,7 @@
         <a href="{{ url_for('playlist.playlists') }}" {% if request.endpoint == 'playlist.playlists' %}class="ativo"{% endif %}>
             <span class="material-symbols-outlined">playlist_play</span> Playlists
         </a>
-        <a href="#" {% if request.endpoint == 'seguindo' %}class="ativo"{% endif %}>
+        <a href="{{ url_for('seguindo.seguindo') }}" {% if request.endpoint == 'seguindo.seguindo' %}class="ativo"{% endif %}>
             <span class="material-symbols-outlined">group</span> Seguindo
         </a>
     </div>
@@ -669,8 +669,9 @@ document.getElementById("btnEnviarPost").addEventListener("click", async () => {
             audio.currentTime = 0;
             audio.play();
         } else {
-            isPlaying = false;
-            setPlayIcon(false);
+            // tenta avançar na fila (álbum ou playlist)
+            const temProxima = window.btQueueNext && window.btQueueNext();
+            if (!temProxima) { isPlaying = false; setPlayIcon(false); }
         }
     });
 
@@ -682,6 +683,25 @@ document.getElementById("btnEnviarPost").addEventListener("click", async () => {
     btnRepeat.addEventListener("click", () => {
         repeatOn = !repeatOn;
         btnRepeat.classList.toggle("ativo", repeatOn);
+    });
+
+    /* ── próxima / anterior ── */
+    const btnNext = document.getElementById("btnNext");
+    const btnPrev = document.getElementById("btnPrev");
+
+    btnNext.addEventListener("click", () => {
+        const ok = window.btQueueNext && window.btQueueNext();
+        if (!ok) mostrarToast("Não há próxima música na fila.", "info", 2000);
+    });
+
+    btnPrev.addEventListener("click", () => {
+        // se passou mais de 3s, volta pro início da música atual
+        if (audio.currentTime > 3) {
+            audio.currentTime = 0;
+            return;
+        }
+        const ok = window.btQueuePrev && window.btQueuePrev();
+        if (!ok) { audio.currentTime = 0; }
     });
 
     /* ── controles play/pause ── */
