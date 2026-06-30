@@ -31,6 +31,19 @@ class Config:
 
     OAUTHLIB_INSECURE_TRANSPORT = os.getenv("FLASK_ENV") == "development"
 
+    # Google reCAPTCHA v3 (invisível) — mesmas chaves do BeatTube
+    RECAPTCHA_SITE_KEY   = os.getenv("RECAPTCHA_SITE_KEY", "")
+    RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "")
+    RECAPTCHA_MIN_SCORE  = float(os.getenv("RECAPTCHA_MIN_SCORE", "0.5"))
+
+    # Email (Gmail SMTP) — usado para enviar o código de verificação no cadastro
+    MAIL_SERVER         = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT           = int(os.getenv("MAIL_PORT", "587"))
+    MAIL_USE_TLS        = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
+    MAIL_USERNAME       = os.getenv("MAIL_USERNAME", "")
+    MAIL_PASSWORD       = os.getenv("MAIL_PASSWORD", "")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", os.getenv("MAIL_USERNAME", ""))
+
     # Azure Blob
     AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING", "")
     AZURE_CONTAINER_VIDEOS          = os.getenv("AZURE_CONTAINER_VIDEOS", "videos")

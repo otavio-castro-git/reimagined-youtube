@@ -92,6 +92,17 @@ document.querySelectorAll('[data-open]').forEach(btn => {
   });
 });
 
+// Links de Termos de Uso / Política de Privacidade (abrem por cima do cadastro,
+// sem fechar/perder o que já foi digitado no formulário)
+document.getElementById('openTermsOfUse')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  openModal('modalTermsOfUse');
+});
+document.getElementById('openPrivacyPolicy')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  openModal('modalPrivacyPolicy');
+});
+
 // Click outside modal
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', (e) => {
@@ -112,12 +123,29 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// ─── CAPTCHA (Google reCAPTCHA v3) ────────────────────────────
+async function getCaptchaToken(acao) {
+  if (!window.RECAPTCHA_SITE_KEY || !window.grecaptcha) {
+    // Captcha não configurado no .env — segue sem token (o back-end
+    // também libera nesse caso, mas avisa no log do servidor).
+    return "";
+  }
+  return new Promise((resolve) => {
+    grecaptcha.ready(() => {
+      grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action: acao })
+        .then(resolve)
+        .catch(() => resolve(""));
+    });
+  });
+}
+
 // ─── LOGIN FORM ──────────────────────────────────────────────
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = document.getElementById('loginError');
   err.textContent = '';
   const data = Object.fromEntries(new FormData(e.target));
+  data.captcha_token = await getCaptchaToken('login');
   try {
     const res  = await fetch('/auth/login', {
       method: 'POST',
@@ -135,12 +163,23 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
   }
 });
 
-// ─── REGISTER FORM ───────────────────────────────────────────
+// ─── REGISTER FORM — Passo 1: enviar dados e receber código por email ────
+let cadastroEmailPendente = '';
+
 document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = document.getElementById('registerError');
   err.textContent = '';
+
+  const aceitouTermos = document.getElementById('registerAceiteTermos')?.checked;
+  if (!aceitouTermos) {
+    err.textContent = 'Você precisa aceitar os Termos de Uso e a Política de Privacidade.';
+    return;
+  }
+
   const data = Object.fromEntries(new FormData(e.target));
+  data.aceitou_termos = true;
+  data.captcha_token = await getCaptchaToken('register');
   try {
     const res  = await fetch('/auth/register', {
       method: 'POST',
@@ -149,9 +188,66 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
     });
     const json = await res.json();
     if (json.ok) {
-      window.location.href = json.redirect || '/';
+      cadastroEmailPendente = json.email;
+      document.getElementById('verifyEmailText').textContent = json.email;
+      document.getElementById('verifyError').textContent = '';
+      document.getElementById('verifyCode').value = '';
+      closeModal('modalRegister');
+      openModal('modalVerifyEmail');
     } else {
       err.textContent = json.msg || 'Erro ao cadastrar.';
+    }
+  } catch {
+    err.textContent = 'Erro de conexão.';
+  }
+});
+
+// ─── REGISTER — Passo 2: confirmar código recebido por email ─────────────
+document.getElementById('verifyForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err  = document.getElementById('verifyError');
+  const code = document.getElementById('verifyCode').value.trim();
+  err.textContent = '';
+
+  if (!code) {
+    err.textContent = 'Digite o código recebido por email.';
+    return;
+  }
+
+  try {
+    const res  = await fetch('/auth/register/confirmar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cadastroEmailPendente, codigo: code }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      window.location.href = json.redirect || '/';
+    } else {
+      err.textContent = json.msg || 'Erro ao confirmar código.';
+    }
+  } catch {
+    err.textContent = 'Erro de conexão.';
+  }
+});
+
+// ─── REGISTER — reenviar código ───────────────────────────────────────────
+document.getElementById('btnResendCode')?.addEventListener('click', async () => {
+  const err = document.getElementById('verifyError');
+  err.textContent = '';
+  try {
+    const res  = await fetch('/auth/register/reenviar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cadastroEmailPendente }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      err.style.color = 'var(--accent)';
+      err.textContent = 'Código reenviado!';
+    } else {
+      err.style.color = '';
+      err.textContent = json.msg || 'Erro ao reenviar código.';
     }
   } catch {
     err.textContent = 'Erro de conexão.';

@@ -29,6 +29,25 @@ header {
 .header-esquerda {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #B3B3B3;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.hamburger-btn:hover {
+  background-color: #3f150559;
+  color: white;
 }
 
 .logo {
@@ -516,3 +535,80 @@ html[data-tema="claro"] .album-titulo { color: white !important; }
 html[data-tema="claro"] .modal { background: #fff !important; border-color: #ddd !important; }
 html[data-tema="claro"] .playlist-list-item { color: #1a1a1a !important; }
 html[data-tema="claro"] .playlist-list-item:hover { background: #f0f0f0 !important; }
+
+/* =====================
+   OVERLAY DA SIDEBAR (mobile)
+   ===================== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+}
+
+/* =====================
+   RESPONSIVO (header/sidebar/main)
+   ===================== */
+@media (max-width: 1024px) {
+  main { margin-left: 0 !important; }
+  .hamburger-btn { display: flex; }
+
+  .sidebar {
+    display: block;
+    top: 0;
+    height: 100%;
+    width: 240px;
+    padding-top: 86px;
+    background-color: #070200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 1000;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .logo p { font-size: 1.15rem; }
+  .header-centro input { width: 130px; }
+  .username { display: none; }
+
+  main { padding: 16px; }
+
+  .modal { width: calc(100% - 32px); }
+
+  .toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .toast { min-width: 0; max-width: none; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .header-centro input { width: 90px; font-size: 0.85rem; }
+  .logo p { font-size: 1rem; }
+}
+
+/* ── ÁLBUM (específico desta página) ──────────────────── */
+@media (max-width: 768px) {
+  .parte-cima {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+  .album-cover { width: 140px; height: 140px; }
+  .album-titulo { font-size: 2rem; }
+  .album-artista { font-size: 1.1rem; }
+
+  .musica-link { flex-wrap: wrap; gap: 10px; padding: 10px 12px; }
+  .musica-info { width: auto; flex: 1; min-width: 120px; }
+  .musica-album { display: none; }
+  .musica-tempo { margin-left: 0; }
+}
+
+@media (max-width: 480px) {
+  .album-cover { width: 110px; height: 110px; }
+  .album-titulo { font-size: 1.5rem; }
+}

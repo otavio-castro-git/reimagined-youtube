@@ -30,6 +30,25 @@ header {
 .header-esquerda {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #B3B3B3;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.hamburger-btn:hover {
+  background-color: #3f150559;
+  color: white;
 }
 
 .logo {
@@ -382,6 +401,25 @@ main {
   margin: 0 0 24px 0;
 }
 
+.verificar-texto {
+  text-align: center;
+  font-size: 0.88rem;
+  color: #bbb;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.verificar-texto strong {
+  color: #ff6600;
+}
+
+#codigoVerificacao {
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 8px;
+  font-weight: 700;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -700,4 +738,176 @@ main {
 .google-btn:hover {
   background: #f0f0f0;
   transform: scale(1.02);
+}
+
+/* =====================
+   OVERLAY DA SIDEBAR (mobile)
+   ===================== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+}
+
+/* =====================
+   RESPONSIVO
+   ===================== */
+@media (max-width: 1024px) {
+  main { margin-left: 0; }
+  .sidebar { display: none; }
+  .hamburger-btn { display: flex; }
+
+  .sidebar {
+    display: block;
+    top: 0;
+    height: 100%;
+    width: 240px;
+    padding-top: 86px;
+    background-color: #070200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 1000;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .logo p { font-size: 1.15rem; }
+
+  .header-centro input { width: 130px; }
+
+  .username { display: none; }
+  .postar-btn { font-size: 0; padding: 8px; border-radius: 50%; gap: 0; }
+  .postar-btn .material-symbols-outlined { font-size: 1.3rem; }
+
+  main { margin-left: 0; padding: 16px; margin-top: 70px; }
+
+  .modal { width: calc(100% - 32px); }
+  .modal-postar { width: calc(100% - 32px); }
+
+  .toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .toast { min-width: 0; max-width: none; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .header-centro input { width: 90px; font-size: 0.85rem; }
+  .logo p { font-size: 1rem; }
+  .logo img { height: 38px !important; }
+
+  .ouvir_novamente {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+
+  .overlay h3 { font-size: 1.4rem; }
+  .card { height: 160px; }
+}
+
+/* ─── Checkbox de aceite dos Termos de Uso / Política de Privacidade ───────── */
+.field-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 18px 0;
+}
+
+.field-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin-top: 2px;
+  accent-color: #ff6600;
+  cursor: pointer;
+}
+
+.field-checkbox label {
+  font-size: 0.82rem;
+  color: #bbb;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.field-checkbox label a {
+  color: #ff6600;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.field-checkbox label a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Modais de texto legal (Termos de Uso / Política de Privacidade) ──────── */
+.modal-legal {
+  width: 560px;
+  max-width: calc(100% - 32px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-legal-texto {
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 18px;
+  color: #cccccc;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.modal-legal-texto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-legal-texto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-legal-texto::-webkit-scrollbar-thumb {
+  background: #ff6600;
+  border-radius: 4px;
+}
+
+.modal-legal-texto h4 {
+  color: #ff6600;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 18px 0 8px 0;
+}
+
+.modal-legal-texto h4:first-child {
+  margin-top: 0;
+}
+
+.legal-intro {
+  background: rgba(255, 102, 0, 0.08);
+  border-left: 3px solid #ff6600;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 0 0 16px 0;
+  font-size: 0.85rem;
+  color: #ddd;
+}
+
+.legal-intro strong {
+  color: #ff6600;
+}
+
+.modal-legal-texto ul {
+  margin: 0 0 4px 0;
+  padding-left: 20px;
+}
+
+.modal-legal-texto li {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 480px) {
+  .modal-legal { width: calc(100% - 32px); max-height: 85vh; }
 }

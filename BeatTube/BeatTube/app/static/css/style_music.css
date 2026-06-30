@@ -209,3 +209,25 @@ html[data-tema="claro"] .music-title { color: white !important; }
 html[data-tema="claro"] .secao h2 { color: #1a1a1a !important; }
 html[data-tema="claro"] .musica:hover { background-color: #eeeeee !important; }
 html[data-tema="claro"] .nome_musica { color: #1a1a1a !important; }
+
+/* ── RESPONSIVO ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .music-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 20px 24px;
+    gap: 16px;
+  }
+  .music-cover { width: 150px; height: 150px; }
+  .music-actions { width: 100%; }
+  .play-btn { flex: 1; justify-content: center; }
+
+  .secao { padding: 0 20px 30px; }
+}
+
+@media (max-width: 480px) {
+  .music-cover { width: 120px; height: 120px; }
+  .music-meta { font-size: 0.82rem; }
+  .musica { width: 110px; }
+  .musica .capa { width: 110px; height: 110px; }
+}

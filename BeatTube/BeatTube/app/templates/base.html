@@ -3,10 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% if not current_user.is_authenticated %}
+    <script>window.RECAPTCHA_SITE_KEY = "{{ config.RECAPTCHA_SITE_KEY }}";</script>
+    {% if config.RECAPTCHA_SITE_KEY %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config.RECAPTCHA_SITE_KEY }}"></script>
+    {% endif %}
+    {% endif %}
     {% block extra_css %}{% endblock %}
     <title>{% block title %}BeatTube{% endblock %}</title>
 </head>
@@ -15,6 +24,9 @@
 <!-- CABEÇALHO -->
 <header>
     <div class="header-esquerda">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
         <a href="{{ url_for('home.index') }}" class="logo">
             <img src="{{ url_for('static', filename='img/beattube_logo.png') }}" height="50px" draggable="false">
             <p>Beat<span>Tube</span></p>
@@ -95,6 +107,9 @@
     </div>
 </nav>
 
+<!-- OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- CONTEÚDO PRINCIPAL -->
 <main>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -166,6 +181,14 @@
             <input type="password" id="cadSenha2" placeholder="••••••••">
         </div>
 
+        <div class="field-checkbox">
+            <input type="checkbox" id="cadAceiteTermos">
+            <label for="cadAceiteTermos">
+                Li e aceito os <a href="#" id="abrirTermosUso">Termos de Uso</a> e a
+                <a href="#" id="abrirPoliticaPrivacidade">Política de Privacidade</a>
+            </label>
+        </div>
+
         <button class="entrar-btn" id="btnCadastro">Cadastrar</button>
 
         <a href="{{ url_for('auth.google_login') }}" class="google-btn">
@@ -176,6 +199,175 @@
         <button class="fechar-btn" id="fecharCadastro">Cancelar</button>
         <p class="cadastro-link">Já tem conta? <a href="#" id="irLogin">Login</a></p>
         <p id="cadErro" class="form-erro"></p>
+    </div>
+</div>
+
+<!-- MODAL TERMOS DE USO -->
+<div class="modal-overlay" id="modalTermosUso">
+    <div class="modal modal-legal">
+        <p class="modal-title">Termos de Uso</p>
+        <div class="modal-legal-texto">
+            <p class="legal-intro">
+                Estes Termos de Uso se aplicam a todos os serviços do grupo Tube
+                (atualmente <strong>BeatTube</strong> e <strong>ViewTube</strong>,
+                e futuramente <strong>LowTube</strong> e <strong>RoomsTube</strong>),
+                aqui referidos como &#x201C;a plataforma&#x201D;.
+            </p>
+
+            <h4>1 – Aceitação dos Termos de Uso</h4>
+            <ul>
+                <li>Ao acessar a plataforma, o usuário declara que leu, compreendeu, aceitou e cumprirá estes Termos de Uso ao criar conta, acessar ou utilizar esta plataforma.</li>
+                <li>O uso destes serviços está condicionado à aceitação dos Termos de Uso, caso contrário, não poderá utilizar.</li>
+                <li>A aceitação considera a versão dos Termos de Uso vigente quando o usuário aceitou.</li>
+                <li>A plataforma poderá atualizar estes Termos de Uso, e mudanças podem exigir que o usuário faça nova aceitação.</li>
+                <li>O usuário declara possuir capacidade de aceitar os Termos de Uso e fornecerá informações verdadeiras quando necessário.</li>
+            </ul>
+
+            <h4>2 – Conta do Usuário</h4>
+            <ul>
+                <li>Quando o usuário cria uma conta, as informações dadas devem ser verdadeiras e atualizadas.</li>
+                <li>As informações fornecidas na ou pela conta são responsabilidade do usuário.</li>
+                <li>O usuário deve manter login e senha seguros, não compartilhar o acesso à conta e notificar a plataforma em caso de acesso ou uso não autorizado.</li>
+                <li>Usuários entre 12 e 16 anos somente poderão criar uma conta mediante autorização e/ou supervisão de seus pais ou responsáveis legais. Usuários menores de 12 anos não poderão criar ou utilizar contas na plataforma. Usuários com 16 anos ou mais poderão criar uma conta de forma independente, responsabilizando-se pelo uso da plataforma e pelo cumprimento destes Termos de Uso.</li>
+                <li>A conta não deve ser usada para atos ilegais ou que violem as regras da plataforma.</li>
+                <li>Caso o usuário viole os termos e condições, a plataforma pode limitar, suspender ou deletar a conta de dito usuário.</li>
+                <li>O usuário tem a opção de solicitar o encerramento da conta quando desejar.</li>
+            </ul>
+
+            <h4>3 – Responsabilidades do Usuário</h4>
+            <ul>
+                <li>O usuário deve fornecer dados corretos e mantê-los atualizados.</li>
+                <li>O usuário deve utilizar os serviços de acordo com os Termos de Uso e as leis aplicáveis.</li>
+                <li>O usuário não poderá utilizar a plataforma para fraude, invasão, disseminação de conteúdo ilegal ou qualquer atividade prejudicial.</li>
+                <li>O usuário deverá agir de forma adequada, sem praticar assédio, ameaças ou comportamentos prejudiciais a outros usuários.</li>
+                <li>O usuário é responsável por manter seus dados de acesso seguros e pelas atividades realizadas em sua conta.</li>
+                <li>O usuário não deverá acessar áreas não autorizadas, explorar falhas ou prejudicar o funcionamento do serviço ou plataforma.</li>
+            </ul>
+
+            <h4>4 – Conteúdo Proibido</h4>
+            <ul>
+                <li>É proibido o comportamento de perseguição, intimidação, ameaças, ofensas ou a tentativa de constranger outros usuários.</li>
+                <li>É proibido induzimento, incentivo ou instigação ao suicídio.</li>
+                <li>É proibido conteúdo que ataque pessoas por características pessoais e/ou físicas.</li>
+                <li>É proibido ameaças, incentivo ou organização de atos violentos.</li>
+                <li>É proibido conteúdo que contenha qualquer característica sexual explícita.</li>
+                <li>É proibida a divulgação de dados de terceiros sem autorização.</li>
+                <li>É proibido golpes, enganação, falsificação de informações ou tentativa de obter vantagem indevida.</li>
+            </ul>
+
+            <h4>5 – Moderação</h4>
+            <ul>
+                <li>A plataforma poderá analisar, moderar e remover conteúdos que violem estes Termos de Uso.</li>
+                <li>A plataforma poderá tomar medidas contra os usuários que descumprirem estas regras, como advertência, restrição, suspensão ou encerramento da conta.</li>
+                <li>O objetivo da moderação é manter a segurança, organização e bom funcionamento da plataforma.</li>
+                <li>A plataforma poderá agir após denúncias, identificação de violações dos Termos de Uso ou quando considerar necessária a intervenção.</li>
+                <li>A remoção de conteúdo ou punição poderá ocorrer conforme as regras estabelecidas nestes Termos de Uso.</li>
+            </ul>
+
+            <h4>6 – Permissão para Uso do Serviço</h4>
+            <ul>
+                <li>O usuário pode utilizar os serviços da plataforma conforme estes termos e condições.</li>
+                <li>Tal permissão é pessoal, limitada e não transfere propriedades da plataforma ou de seus conteúdos ao usuário.</li>
+                <li>O usuário não poderá utilizar o serviço para finalidades proibidas ou de forma que prejudique a plataforma.</li>
+                <li>A plataforma poderá limitar ou interromper o acesso ao serviço se houver qualquer violação dos Termos de Uso.</li>
+                <li>O usuário deve utilizar os serviços conforme as regras estabelecidas pela plataforma.</li>
+            </ul>
+
+            <h4>7 – Privacidade</h4>
+            <ul>
+                <li>A plataforma coleta e utiliza os dados informados pelo usuário para o funcionamento dos serviços.</li>
+                <li>A plataforma deverá utilizar os dados conforme a legislação aplicável.</li>
+                <li>A plataforma deverá proteger os dados do usuário e adotar medidas de segurança.</li>
+                <li>A plataforma não deverá usar os dados coletados para outras finalidades diferentes das informadas sem autorização ou base legal.</li>
+                <li>O usuário pode consultar a Política de Privacidade da plataforma para obter mais informações sobre o tratamento dos seus dados.</li>
+            </ul>
+
+            <h4>8 – Copyright</h4>
+            <ul>
+                <li>Todo o conteúdo, marca, design e funcionalidades da plataforma são protegidos por direitos autorais e pertencem à plataforma ou a terceiros licenciados.</li>
+                <li>O usuário não pode copiar, distribuir, modificar, reproduzir ou explorar comercialmente qualquer conteúdo da plataforma sem autorização.</li>
+                <li>O usuário mantém os direitos sobre o conteúdo que publicar, mas concede à plataforma permissão para armazenar, exibir e operar esse conteúdo dentro do serviço.</li>
+                <li>A plataforma poderá remover conteúdos que violem direitos de terceiros.</li>
+            </ul>
+        </div>
+        <button class="entrar-btn" id="fecharTermosUso">Entendi</button>
+    </div>
+</div>
+
+<!-- MODAL POLÍTICA DE PRIVACIDADE -->
+<div class="modal-overlay" id="modalPoliticaPrivacidade">
+    <div class="modal modal-legal">
+        <p class="modal-title">Política de Privacidade</p>
+        <div class="modal-legal-texto">
+            <p class="legal-intro">
+                Esta Política de Privacidade se aplica a todos os serviços do grupo Tube
+                (atualmente <strong>BeatTube</strong> e <strong>ViewTube</strong>,
+                e futuramente <strong>LowTube</strong> e <strong>RoomsTube</strong>),
+                aqui referidos como &#x201C;a plataforma&#x201D;.
+            </p>
+
+            <h4>Coleta de Dados</h4>
+            <ul>
+                <li>Os dados coletados pela plataforma são tratados pelos serviços responsáveis pela manutenção do serviço.</li>
+                <li>Os dados de cadastro que a plataforma solicita, como email e senha, serão armazenados de forma protegida, utilizando medidas de segurança necessárias para evitar o uso inadequado e outros usos que não foram acordados nos Termos de Uso.</li>
+            </ul>
+
+            <h4>Finalidade do Uso dos Dados</h4>
+            <ul>
+                <li>Os dados coletados pela plataforma são utilizados apenas para permitir o funcionamento do serviço, incluindo a criação e gerenciamento de contas, autenticação de usuários, manutenção de segurança e melhoria de experiência de uso.</li>
+            </ul>
+
+            <h4>Armazenamento</h4>
+            <ul>
+                <li>Os dados coletados pela plataforma são armazenados em banco de dados utilizado para o funcionamento do serviço, aplicando medidas de segurança para proteger as informações armazenadas, evitando acessos não autorizados, alterações indevidas ou uso inadequado de dados.</li>
+            </ul>
+
+            <h4>Compartilhamento</h4>
+            <ul>
+                <li>Os dados coletados pela plataforma não são compartilhados com terceiros para finalidades comerciais ou diferentes das informadas tanto nesta Política de Privacidade quanto nos Termos de Uso. Caso seja necessária a utilização de serviços externos, como APIs, hospedagem e armazenamento, os dados poderão ser compartilhados apenas para o funcionamento da plataforma, respeitando as medidas de segurança adequadas.</li>
+            </ul>
+
+            <h4>Direitos do Usuário</h4>
+            <ul>
+                <li>O usuário pode solicitar informações sobre os dados pessoais armazenados pela plataforma, modificação e correção de informações incorretas ou desatualizadas, além da exclusão da sua conta e dos dados associados (através do canal de contato disponibilizado).</li>
+            </ul>
+
+            <h4>Alterações</h4>
+            <ul>
+                <li>A Política de Privacidade poderá sofrer alterações periodicamente devido a mudanças no serviço, melhorias ou atualizações. Recomenda-se a consulta desta política regularmente para acompanhar possíveis atualizações.</li>
+            </ul>
+
+            <h4>Contato</h4>
+            <ul>
+                <li>Para essas ou mais dúvidas relacionadas aos dados pessoais e à Política de Privacidade, o usuário pode entrar em contato conosco através dos canais de suporte disponibilizados na plataforma.</li>
+            </ul>
+        </div>
+        <button class="entrar-btn" id="fecharPoliticaPrivacidade">Entendi</button>
+    </div>
+</div>
+
+<!-- MODAL VERIFICAR EMAIL (código de 6 dígitos) -->
+<div class="modal-overlay" id="modalVerificarEmail">
+    <div class="modal">
+        <div class="logo-modal">
+            <img src="{{ url_for('static', filename='img/beattube_logo.png') }}" height="34px" draggable="false">
+            <p>Beat<span>Tube</span></p>
+        </div>
+        <p class="modal-title">Confirme seu email</p>
+        <p class="verificar-texto">
+            Enviamos um código de 6 dígitos para <strong id="verificarEmailTexto"></strong>.
+            Digite o código abaixo para concluir o cadastro.
+        </p>
+
+        <div class="field">
+            <label>Código</label>
+            <input type="text" id="codigoVerificacao" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+        </div>
+
+        <button class="entrar-btn" id="btnConfirmarCodigo">Confirmar</button>
+        <button class="fechar-btn" id="btnReenviarCodigo" type="button">Reenviar código</button>
+        <button class="fechar-btn" id="fecharVerificarEmail">Cancelar</button>
+        <p id="verificarErro" class="form-erro"></p>
     </div>
 </div>
 {% endif %}
@@ -525,9 +717,11 @@ document.getElementById("btnEnviarPost").addEventListener("click", async () => {
 .control-btn.play-btn:hover { background:#e0e0e0; color:#1e1e1e; }
 .control-btn.ativo { color:#ff6600; }
 
-@media (max-width:480px) {
+@media (max-width: 600px) {
     .player-flutuante-compacto { bottom:10px; right:10px; left:10px; }
     .player-compacto { width:100%; }
+    .music-popup { max-width: 100%; }
+    .album-art { height: 140px; }
 }
 </style>
 

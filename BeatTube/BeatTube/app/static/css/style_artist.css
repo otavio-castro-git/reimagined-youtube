@@ -233,3 +233,32 @@ html[data-tema="claro"] .musica-linha:hover { background: #eeeeee !important; }
 html[data-tema="claro"] .nome_musica { color: #1a1a1a !important; }
 html[data-tema="claro"] .card:hover { background: #eeeeee !important; }
 html[data-tema="claro"] .card-nome { color: #1a1a1a !important; }
+
+/* ── RESPONSIVO ───────────────────────────────────── */
+@media (max-width: 1024px) {
+  main { margin-left: 0; }
+}
+
+@media (max-width: 768px) {
+  .artist-hero { height: 240px; }
+  .artist-hero-overlay {
+    padding: 0 20px 20px;
+    gap: 16px;
+    align-items: center;
+  }
+  .artist-avatar { width: 90px; height: 90px; }
+  .artist-body { padding: 24px 20px 40px; }
+
+  .musica-linha { gap: 10px; padding: 8px 10px; }
+  .musica-linha-capa { width: 38px; height: 38px; }
+  .musica-duracao { display: none; }
+
+  .cards-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
+}
+
+@media (max-width: 480px) {
+  .artist-hero { height: 200px; }
+  .artist-hero-overlay { flex-direction: column; align-items: flex-start; gap: 10px; padding: 0 16px 16px; }
+  .artist-avatar { width: 72px; height: 72px; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+}

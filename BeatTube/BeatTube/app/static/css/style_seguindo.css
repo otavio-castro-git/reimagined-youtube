@@ -246,3 +246,24 @@ html[data-tema="claro"] .artist-row:hover { border-color: #ffb380 !important; }
 html[data-tema="claro"] .artist-row-nome { color: #1a1a1a !important; }
 html[data-tema="claro"] .song-mini:hover { background: #f0f0f0 !important; }
 html[data-tema="claro"] .song-mini-title { color: #1a1a1a !important; }
+
+/* ── RESPONSIVO ───────────────────────────────────── */
+@media (max-width: 1024px) {
+  main { margin-left: 0; }
+}
+
+@media (max-width: 768px) {
+  main { padding: 20px 16px; }
+  .seguindo-feed { max-width: 100%; }
+
+  .artist-row-header { flex-wrap: wrap; gap: 10px; }
+  .artist-row-avatar { width: 44px; height: 44px; }
+  .btn-seguir { padding: 6px 14px; font-size: 0.78rem; }
+
+  .song-mini-capa { width: 34px; height: 34px; }
+}
+
+@media (max-width: 480px) {
+  .artist-row { padding: 16px 14px 12px; }
+  .song-mini-sub { display: none; }
+}

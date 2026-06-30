@@ -30,6 +30,25 @@ header {
 .header-esquerda {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #B3B3B3;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.hamburger-btn:hover {
+  background-color: #3f150559;
+  color: white;
 }
 
 .logo {
@@ -307,4 +326,81 @@ main {
 .mais-btn:hover {
   color: white;
   background-color: rgba(255, 255, 255, 0.1);
+}
+/* =====================
+   OVERLAY DA SIDEBAR (mobile)
+   ===================== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+}
+
+/* =====================
+   RESPONSIVO (header/sidebar/main)
+   ===================== */
+@media (max-width: 1024px) {
+  main { margin-left: 0 !important; }
+  .hamburger-btn { display: flex; }
+
+  .sidebar {
+    display: block;
+    top: 0;
+    height: 100%;
+    width: 240px;
+    padding-top: 86px;
+    background-color: #070200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 1000;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .logo p { font-size: 1.15rem; }
+  .header-centro input { width: 130px; }
+  .username { display: none; }
+
+  main { padding: 16px; }
+
+  .modal { width: calc(100% - 32px); }
+
+  .toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .toast { min-width: 0; max-width: none; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .header-centro input { width: 90px; font-size: 0.85rem; }
+  .logo p { font-size: 1rem; }
+}
+
+/* ── HISTÓRICO (específico desta página) ──────────────── */
+@media (max-width: 768px) {
+  .historico-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  .musica-historico {
+    grid-template-columns: 46px 1fr 70px 32px;
+    gap: 10px;
+    padding: 8px 12px;
+  }
+  /* esconde a 2ª linha de hist-info (álbum) — mantém só artista */
+  .hist-info + .hist-info { display: none; }
+}
+
+@media (max-width: 480px) {
+  .musica-historico {
+    grid-template-columns: 40px 1fr 32px;
+    gap: 8px;
+  }
+  .hist-duracao { display: none; }
+  .capa-historico { width: 36px; height: 36px; }
+  .hist-nome { font-size: 0.9rem; }
+  .hist-info { font-size: 0.78rem; }
 }

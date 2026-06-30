@@ -24,6 +24,24 @@
   --transition:   .18s ease;
 }
 
+/* ─── MODO CLARO ───────────────────────────────────────────────
+   Como todo o site usa as variáveis acima (var(--bg), var(--text)
+   etc.), basta sobrescrevê-las aqui para o tema claro se aplicar
+   a toda a interface automaticamente. */
+[data-tema="claro"] {
+  --bg:           #fafafa;
+  --bg-surface:   #ffffff;
+  --bg-hover:     #f0f0f0;
+  --bg-elevated:  #f5f5f5;
+  --border:       #e0e0e0;
+  --accent:       #FF3B30;
+  --accent-hover: #e82e24;
+  --text:         #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted:   #888888;
+  --shadow:       0 2px 12px rgba(0,0,0,.1);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -111,6 +129,16 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   transition: background var(--transition);
 }
 .btn-upload:hover { background: var(--bg-hover); }
+
+.theme-toggle-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 50%; color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover { background: var(--bg-hover); color: var(--text); }
 
 .btn-login {
   background: none; border: 1px solid #717171;
@@ -533,6 +561,60 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .form-group textarea:focus { border-color: #777; }
 .form-error { color: #ff6b6b; font-size: .85rem; margin-top: .5rem; min-height: 1.2em; }
 
+/* ─── CHECKBOX DE TERMOS (cadastro) ──────────────────────────── */
+.terms-check {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: .9rem 0 .25rem 0; cursor: pointer;
+  font-size: .82rem; color: var(--text-secondary); line-height: 1.4;
+}
+.terms-check input[type="checkbox"] {
+  width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;
+  accent-color: var(--accent); cursor: pointer;
+}
+.terms-check a {
+  color: var(--accent); text-decoration: none;
+}
+.terms-check a:hover { text-decoration: underline; }
+
+/* ─── MODAIS LEGAIS (Termos de Uso / Política de Privacidade) ──── */
+.modal-legal {
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex; flex-direction: column;
+}
+.modal-legal-texto {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 6px;
+  margin-bottom: 1rem;
+}
+.modal-legal-texto::-webkit-scrollbar { width: 6px; }
+.modal-legal-texto::-webkit-scrollbar-track { background: transparent; }
+.modal-legal-texto::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.modal-legal-texto h4 {
+  font-family: var(--font); font-size: .95rem; font-weight: 700;
+  color: var(--text); margin: 1.1rem 0 .4rem 0;
+}
+.modal-legal-texto h4:first-child { margin-top: 0; }
+.modal-legal-texto ul { margin: 0 0 0 1.1rem; padding: 0; }
+.modal-legal-texto li {
+  font-size: .85rem; color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: .5rem;
+}
+
+.legal-intro {
+  background: rgba(255, 59, 48, 0.08);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px; border-radius: 6px;
+  margin: 0 0 1rem 0; font-size: .82rem; color: var(--text-secondary);
+}
+.legal-intro strong { color: var(--accent); }
+
+@media (max-width: 600px) {
+  .modal-legal { max-width: calc(100% - 32px); max-height: 80vh; }
+}
+
 /* ─── MODALS ───────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;
@@ -614,6 +696,13 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .btn-large { padding: 12px 24px; font-size: 1rem; border-radius: var(--radius); }
 
 .modal-switch { text-align: center; font-size: .85rem; color: var(--text-muted); margin-top: .75rem; }
+
+.verify-text {
+  text-align: center; font-size: .85rem; color: var(--text-secondary);
+  line-height: 1.5; margin: -.5rem 0 1rem 0;
+}
+.verify-text strong { color: var(--accent); }
+
 .link-btn {
   background: none; border: none; color: #3ea6ff;
   font-size: inherit; cursor: pointer; padding: 0;
@@ -638,6 +727,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .page-title { font-family: var(--font); font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; }
 
 /* ─── RESPONSIVE ───────────────────────────────────────────── */
+
+/* Tablets / telas médias */
 @media (max-width: 1200px) {
   .watch-layout { grid-template-columns: 1fr; }
   .watch-sidebar { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
@@ -645,18 +736,112 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   .rec-card { flex-direction: column; }
   .rec-thumb { width: 100%; }
 }
+
+/* Tablets pequenos / celulares grandes (landscape) */
+@media (max-width: 900px) {
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem 1.25rem; }
+  .nav-center { margin: 0 .5rem; }
+}
+
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
-  .sidebar { transform: translateX(-240px); width: 240px !important; }
-  .sidebar.mobile-open { transform: translateX(0); }
+
+  /* Sidebar vira drawer off-canvas */
+  .sidebar { transform: translateX(-240px); width: 240px !important; top: var(--navbar-h); }
+  .sidebar.mobile-open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.5); }
   .main-content { margin-left: 0 !important; padding: 1rem; }
-  .nav-center { max-width: none; }
+
+  /* Navbar mais compacta */
+  .navbar { padding: 0 .5rem; gap: .5rem; }
+  .logo span { display: none; }
+  .nav-center { max-width: none; margin: 0 .25rem; }
+  .search-wrap input { padding: 8px 12px; font-size: .85rem; }
+  .btn-upload { padding: 8px; border-radius: 50%; font-size: 0; gap: 0; }
+  .btn-upload svg { display: block; }
+  .btn-login, .btn-register { padding: 6px 10px; font-size: .8rem; }
+
+  /* Grids e listas */
   .list-thumb { width: 140px; }
-  .video-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .75rem 1rem; }
+  .video-list-item { gap: .75rem; }
+
+  /* Watch page */
+  .watch-layout { gap: 1rem; }
+  .video-title { font-size: 1.1rem; }
+  .video-meta-row { flex-direction: column; align-items: stretch; gap: .6rem; }
+  .video-actions { flex-wrap: wrap; }
+
+  /* Comentários */
+  .comment-form { gap: .5rem; }
+  .comment-actions { flex-wrap: wrap; }
+
+  /* Canal */
+  .channel-banner { height: 110px; }
+  .channel-header { gap: .75rem; }
+  .channel-avatar-xl { width: 64px; height: 64px; font-size: 1.5rem; }
+  .channel-details h1 { font-size: 1.15rem; }
+  .page-header-row { align-items: flex-start; }
+
+  /* Modais ocupam quase a tela toda */
+  .modal { width: calc(100% - 2rem); max-height: 90vh; overflow-y: auto; }
+
+  /* Player: controles um pouco maiores para toque */
+  .vt-btn { padding: 8px; }
+  .vt-volume-slider-wrap { width: 0 !important; }
+  .vt-volume-wrap:active .vt-volume-slider-wrap,
+  .vt-volume-wrap:hover .vt-volume-slider-wrap { width: 50px; }
+
+  /* Playlists */
+  .playlists-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
+
+/* Celulares */
 @media (max-width: 480px) {
   .nav-right .btn-register { display: none; }
+  .nav-left { gap: .4rem; }
   .video-grid { grid-template-columns: 1fr; }
+  .video-grid.video-grid-compact { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+
+  .page-title { font-size: 1.15rem; }
+  .page-container { padding: 0 .25rem; }
+
+  /* Watch */
+  .video-title { font-size: 1rem; }
+  .channel-info strong { font-size: .875rem; }
+  .btn-subscribe { padding: 7px 14px; font-size: .8rem; }
+  .video-description { padding: .6rem .75rem; }
+
+  /* Listas com thumb menor para caber melhor */
+  .list-thumb { width: 110px; }
+  .video-list-item.ranked { gap: .5rem; }
+  .rank-num { font-size: 1.1rem; min-width: 1.5rem; }
+
+  /* Comentário: avatar menor */
+  .comment-avatar img,
+  .comment-avatar .avatar-placeholder { width: 28px; height: 28px; }
+
+  /* Canal */
+  .channels-row { gap: .5rem; }
+  .channel-chip { min-width: 68px; padding: .6rem .75rem; }
+
+  /* Modal */
+  .modal { padding: 1.25rem; }
+  .btn-google { font-size: .85rem; }
+
+  /* Upload */
+  .upload-drop { padding: 1.5rem .75rem; }
+
+  /* Player: esconde rótulos de texto pouco essenciais */
+  .vt-time { font-size: .7rem; padding: 0 2px; }
+}
+
+/* Telas bem pequenas / orientação retrato estreita */
+@media (max-width: 360px) {
+  .nav-center { margin: 0 .15rem; }
+  .search-wrap input { padding: 8px 8px; }
+  .search-btn { padding: 8px 10px; }
+  .video-grid { grid-template-columns: 1fr; }
+  .video-actions { gap: .35rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════

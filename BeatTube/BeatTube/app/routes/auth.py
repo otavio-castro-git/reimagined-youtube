@@ -2,11 +2,16 @@
 Autenticação: login por email/senha e login com Google OAuth 2.0.
 """
 import os
+import random
+import time
 import requests
-from flask import Blueprint, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlencode
+from werkzeug.security import generate_password_hash, check_password_hash
 from ..models import db, User, Playlist
+from ..captcha_utils import validar_recaptcha
+from ..email_utils import enviar_email_codigo
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -33,13 +38,22 @@ def login():
     email = data.get("email", "").strip().lower()
     senha = data.get("password", "")
 
+    def erro(msg, status=401):
+        if request.is_json:
+            return jsonify({"ok": False, "msg": msg}), status
+        flash(msg, "error")
+        return redirect(url_for("home.index"))
+
+    # ── Captcha (reCAPTCHA v3) ──────────────────────────────────────────────
+    captcha_token = data.get("captcha_token", "")
+    captcha_ok, captcha_msg = validar_recaptcha(captcha_token, acao_esperada="login")
+    if not captcha_ok:
+        return erro(captcha_msg, 400)
+
     user = User.query.filter_by(email=email).first()
 
     if not user or not user.check_password(senha):
-        if request.is_json:
-            return jsonify({"ok": False, "msg": "Email ou senha incorretos."}), 401
-        flash("Email ou senha incorretos.", "error")
-        return redirect(url_for("home.index"))
+        return erro("Email ou senha incorretos.")
 
     login_user(user, remember=True)
 
@@ -48,7 +62,7 @@ def login():
     return redirect(url_for("home.index"))
 
 
-# ─── Cadastro ─────────────────────────────────────────────────────────────────
+# ─── Cadastro — Passo 1: validar dados + captcha e enviar código por email ────
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data   = request.get_json() or request.form
@@ -56,17 +70,87 @@ def register():
     senha  = data.get("password", "")
     senha2 = data.get("password2", "")
 
-    def erro(msg):
+    def erro(msg, status=400):
         if request.is_json:
-            return jsonify({"ok": False, "msg": msg}), 400
+            return jsonify({"ok": False, "msg": msg}), status
         flash(msg, "error")
         return redirect(url_for("home.index"))
+
+    # ── Captcha (reCAPTCHA v3) ──────────────────────────────────────────────
+    captcha_token = data.get("captcha_token", "")
+    captcha_ok, captcha_msg = validar_recaptcha(captcha_token, acao_esperada="register")
+    if not captcha_ok:
+        return erro(captcha_msg)
 
     if not email or not senha:
         return erro("Preencha todos os campos.")
     if senha != senha2:
         return erro("As senhas não coincidem.")
+
+    # ── Aceite dos Termos de Uso e Política de Privacidade ──────────────────
+    # Nunca confiar apenas na validação do front-end: o checkbox precisa
+    # chegar marcado também na requisição.
+    aceitou_termos = data.get("aceitou_termos") in (True, "true", "True", "1", 1, "on")
+    if not aceitou_termos:
+        return erro("Você precisa aceitar os Termos de Uso e a Política de Privacidade para se cadastrar.")
+
     if User.query.filter_by(email=email).first():
+        return erro("Email já cadastrado.")
+
+    # Gera o código de 6 dígitos e guarda temporariamente na sessão (cookie
+    # assinado pelo Flask) até o usuário confirmar — nada disso vai pro banco.
+    codigo = f"{random.randint(0, 999999):06d}"
+
+    session["cadastro_pendente"] = {
+        "email":         email,
+        "code_hash":     generate_password_hash(codigo),
+        "password_hash": generate_password_hash(senha),
+        "attempts":      0,
+        "expires_at":    time.time() + 10 * 60,  # 10 minutos
+    }
+
+    enviar_email_codigo(email, codigo)
+
+    return jsonify({"ok": True, "etapa": "verificar_email", "email": email})
+
+
+# ─── Cadastro — Passo 2: confirmar código e criar a conta ─────────────────────
+@auth_bp.route("/register/confirmar", methods=["POST"])
+def register_confirmar():
+    data   = request.get_json() or request.form
+    email  = data.get("email", "").strip().lower()
+    codigo = data.get("codigo", "").strip()
+
+    def erro(msg, status=400):
+        if request.is_json:
+            return jsonify({"ok": False, "msg": msg}), status
+        flash(msg, "error")
+        return redirect(url_for("home.index"))
+
+    pendente = session.get("cadastro_pendente")
+
+    if not email or not codigo:
+        return erro("Informe o código recebido por email.")
+
+    if not pendente or pendente.get("email") != email:
+        return erro("Nenhum cadastro pendente para esse email. Comece o cadastro novamente.")
+
+    if time.time() > pendente["expires_at"]:
+        session.pop("cadastro_pendente", None)
+        return erro("Esse código expirou. Comece o cadastro novamente.")
+
+    if pendente.get("attempts", 0) >= 5:
+        session.pop("cadastro_pendente", None)
+        return erro("Muitas tentativas incorretas. Comece o cadastro novamente.")
+
+    if not check_password_hash(pendente["code_hash"], codigo):
+        pendente["attempts"] = pendente.get("attempts", 0) + 1
+        session["cadastro_pendente"] = pendente
+        return erro("Código incorreto. Verifique e tente novamente.")
+
+    # Código correto: garante que o email ainda não foi cadastrado por outra via
+    if User.query.filter_by(email=email).first():
+        session.pop("cadastro_pendente", None)
         return erro("Email já cadastrado.")
 
     username = email.split("@")[0]
@@ -76,7 +160,7 @@ def register():
         i += 1
 
     user = User(username=username, email=email)
-    user.set_password(senha)
+    user.password_hash = pendente["password_hash"]  # já está em hash
     db.session.add(user)
     db.session.flush()  # gera o user.id antes do commit
 
@@ -90,12 +174,36 @@ def register():
     )
     db.session.add(liked_pl)
     db.session.commit()
+    session.pop("cadastro_pendente", None)
 
     login_user(user, remember=True)
 
     if request.is_json:
         return jsonify({"ok": True, "redirect": url_for("home.index")})
     return redirect(url_for("home.index"))
+
+
+# ─── Cadastro — reenviar código ────────────────────────────────────────────────
+@auth_bp.route("/register/reenviar", methods=["POST"])
+def register_reenviar():
+    data  = request.get_json() or request.form
+    email = data.get("email", "").strip().lower()
+
+    def erro(msg, status=400):
+        return jsonify({"ok": False, "msg": msg}), status
+
+    pendente = session.get("cadastro_pendente")
+    if not pendente or pendente.get("email") != email:
+        return erro("Nenhum cadastro pendente para esse email. Comece o cadastro novamente.")
+
+    codigo = f"{random.randint(0, 999999):06d}"
+    pendente["code_hash"]  = generate_password_hash(codigo)
+    pendente["attempts"]   = 0
+    pendente["expires_at"] = time.time() + 10 * 60
+    session["cadastro_pendente"] = pendente
+
+    enviar_email_codigo(email, codigo)
+    return jsonify({"ok": True})
 
 
 # ─── Logout ───────────────────────────────────────────────────────────────────

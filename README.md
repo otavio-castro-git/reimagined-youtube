@@ -1,168 +1,190 @@
-# reimagined-youtube
+# Reimagined YouTube — BeatTube + ViewTube
 
-Projeto desenvolvido por:
+Repositório: https://github.com/otavio-castro-git/reimagined-youtube
 
-- Otavio Martins
-- Rafael Leite da Silva Francisco
-- Miguel Isaias Ledesma Araujo
-- Murilo Santos Barbosa
-- Pedro Henrique da Silva Bernardo
+**Demos no ar:**
+- ViewTube → https://view-tube.online
+- BeatTube → https://beat-tube.online
 
----
+Este projeto reúne **duas aplicações web independentes**, construídas em Flask, que recriam — cada uma sob um conceito diferente — a experiência de uma plataforma de streaming ao estilo YouTube:
 
-## Sobre o projeto
+- **ViewTube** — um clone focado em **vídeos**: canais, uploads, comentários, inscrições, playlists e histórico de visualização.
+- **BeatTube** — um clone focado em **música**: artistas, álbuns, faixas, playlists, "seguir artistas" e histórico de reprodução.
 
-Este repositório contém dois projetos web desenvolvidos em Flask:
+As duas aplicações são projetos separados (pastas e códigos próprios), mas **compartilham o mesmo banco de dados Azure SQL**, com um schema `shared` comum (usuários, assinaturas, pagamentos) e schemas próprios `beattube` e `viewtube` para os dados específicos de cada produto. Isso significa que uma única conta de usuário pode logar nas duas plataformas.
 
-**ViewTube** — plataforma de vídeos com upload, canais, playlists, histórico, curtidas e sistema de inscrições. Banco de dados: Azure SQL Server.
+## Visão geral da arquitetura
 
-**BeatTube** — plataforma voltada a música, com funcionalidades similares ao ViewTube. Banco de dados: Azure SQL Server. Armazenamento de arquivos: Azure Blob Storage.
+| | ViewTube | BeatTube |
+|---|---|---|
+| Domínio | Vídeos / canais | Músicas / artistas |
+| Framework | Flask 3 + SQLAlchemy | Flask 3 + SQLAlchemy |
+| Autenticação | Login próprio + Google OAuth | Login próprio + Google OAuth |
+| Banco | Azure SQL (schema `shared` + `viewtube`) | Azure SQL (schema `shared` + `beattube`) |
+| Armazenamento de mídia | Azure Blob Storage (vídeos e thumbnails) | Azure Blob Storage / uploads locais (capas) |
+| Porta padrão (dev) | 5001 | 5000 |
 
----
+Ambas seguem o mesmo padrão de organização interna: `app/` com `models.py`, `config.py`, `routes/` (blueprints), `templates/` (Jinja2) e `static/` (CSS/JS/imagens), inicializadas por uma factory `create_app()` em `app/__init__.py` e executadas via `run.py`.
+
+## Banco de dados
+
+O arquivo `full_schema_beattube_viewtube.sql` contém o **schema completo em T-SQL**, pronto para ser executado do zero em um banco Azure SQL vazio. Ele cria três schemas:
+
+- **`shared`** — tabelas usadas pelas duas plataformas:
+  - `users` (conta única, com suporte a login Google via `google_id`)
+  - `user_subscriptions` e `payments` (controle de assinatura premium)
+  - `user_follows_user` (relação social entre usuários)
+- **`beattube`** — domínio musical:
+  - `artists`, `genres`, `albums`, `songs`
+  - tabelas de junção N:N: `song_artists`, `album_songs`, `song_genres`
+  - `playlists` e `playlist_songs`
+  - `liked_songs`, `liked_albums`, `liked_playlists`
+  - `play_history`, `song_uploads`, `user_follows_artist`, `search_history`
+- **`viewtube`** — domínio de vídeo:
+  - `channels`, `videos`, `tags`, `video_tags`
+  - `video_likes`, `comments`, `subscriptions`
+  - `playlists`, `playlist_videos`
+  - `watch_history`, `search_history`
+
+Para criar o banco, basta executar o script inteiro em um banco novo (via Query Editor do portal Azure, Azure Data Studio ou `sqlcmd`).
+
+## ViewTube — funcionalidades
+
+- Cadastro/login (e-mail + senha, com verificação por código enviado por e-mail) e login social com Google.
+- Criação e gerenciamento de **canais** (nome, descrição, imagem de perfil e banner).
+- **Upload de vídeos** para Azure Blob Storage, com thumbnail, título, descrição e tags.
+- Página de exibição (`watch`) com player, contagem de visualizações, curtidas e **comentários**.
+- **Inscrições** em canais, com listagem de canais inscritos na sidebar.
+- **Playlists** de vídeo, vídeos curtidos (`curtidos`), histórico de exibição (`historico`) e página de **tendências**.
+- Busca de vídeos/canais com histórico de pesquisa salvo.
+- Proteção de upload por reCAPTCHA v3 (invisível) e bloqueio de upload para contas não verificadas.
+
+Principais blueprints (`app/routes/`): `auth`, `home`, `video`, `channel`, `upload`, `api`.
+
+## BeatTube — funcionalidades
+
+- Cadastro/login (e-mail + senha, com verificação por código) e login social com Google (via Flask-Dance).
+- Catálogo de **artistas**, **álbuns** e **músicas**, organizados por gêneros.
+- **Upload de faixas**, com capa e metadados.
+- **Playlists** de música, criação e edição, com capa de playlist.
+- **Seguir artistas** (`seguindo`) e ver atualizações dos artistas seguidos.
+- **Histórico de reprodução** (`historico`) e página de **tendências**.
+- Curtidas de músicas, álbuns e playlists.
+- Proteção por reCAPTCHA v3 e envio de e-mails de verificação via SMTP (Gmail).
+
+Principais blueprints (`app/routes/`): `auth`, `home`, `music`, `playlist`, `history`, `upload`, `seguindo`.
+
+## Stack técnica
+
+- **Backend**: Python 3 / Flask 3.0, Flask-SQLAlchemy, Flask-Login, SQLAlchemy 2.0
+- **Banco de dados**: Azure SQL Server (via `pyodbc` + ODBC Driver 18)
+- **Autenticação social**: Flask-Dance (Google OAuth) — usado no BeatTube
+- **Armazenamento de arquivos**: Azure Blob Storage (`azure-storage-blob`)
+- **Imagens**: Pillow (BeatTube, para processamento de capas)
+- **E-mail**: SMTP (Gmail) para envio de códigos de verificação de cadastro
+- **Anti-bot**: Google reCAPTCHA v3 (invisível)
+- **Servidor WSGI (produção)**: Gunicorn
+- **Frontend**: Jinja2 + CSS/JS estático (sem framework JS pesado)
 
 ## Estrutura de pastas
 
 ```
-viewtube/
-├── app/
-│   ├── routes/       # Rotas da aplicação (blueprints)
-│   ├── static/       # CSS, JS e imagens
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── img/
-│   ├── templates/    # HTMLs (Jinja2)
-│   ├── __init__.py
-│   └── models.py
-├── .env.example
-├── requirements.txt
-└── run.py
-
-beattube/
-├── app/
-│   ├── routes/
-│   ├── static/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── img/
-│   ├── templates/
-│   ├── __init__.py
-│   └── models.py
-├── .env.example
-├── requirements.txt
-└── run.py
+reimagined-youtube/
+├── BeatTube/
+│   ├── app/
+│   │   ├── __init__.py        # factory create_app()
+│   │   ├── config.py          # configurações e variáveis de ambiente
+│   │   ├── models.py          # modelos SQLAlchemy (shared + beattube)
+│   │   ├── email_utils.py     # envio de e-mails de verificação
+│   │   ├── captcha_utils.py   # validação do reCAPTCHA v3
+│   │   ├── routes/            # blueprints (auth, home, music, playlist, history, upload, seguindo)
+│   │   ├── templates/         # páginas Jinja2
+│   │   └── static/            # css, js, imagens, uploads
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── run.py
+│
+├── ViewTube/
+│   ├── app/
+│   │   ├── __init__.py        # factory create_app()
+│   │   ├── config.py
+│   │   ├── models.py          # modelos SQLAlchemy (shared + viewtube)
+│   │   ├── email_utils.py
+│   │   ├── captcha_utils.py
+│   │   ├── routes/            # blueprints (auth, home, video, channel, upload, api)
+│   │   ├── templates/
+│   │   └── static/
+│   ├── requirements.txt
+│   ├── .deployment            # configuração de deploy (Azure App Service)
+│   └── run.py
+│
+└── full_schema_beattube_viewtube.sql   # schema completo do banco (shared + beattube + viewtube)
 ```
 
----
+## Como rodar localmente
 
-## Requisitos
+Cada aplicação é independente e roda em sua própria porta, mas as duas apontam para o **mesmo banco Azure SQL** (schemas diferentes).
 
-Antes de começar, instale:
+### Pré-requisitos
 
-- **Python 3.12** — https://www.python.org/downloads/
-  Na instalação, marque **"Add Python to PATH"** antes de clicar em Install.
+- Python 3.10+
+- Driver ODBC 18 para SQL Server instalado (`unixodbc-dev` + driver da Microsoft)
+- Uma instância Azure SQL com o schema criado a partir de `full_schema_beattube_viewtube.sql`
+- (Opcional) Conta de armazenamento Azure Blob, para upload de mídia
+- (Opcional) Credenciais OAuth do Google e chaves de reCAPTCHA v3
 
-- **Driver ODBC para Azure SQL** — https://aka.ms/downloadmsodbcsql
-  Baixe o arquivo **x64** e instale normalmente (next → next → finish).
+### 1. Banco de dados
 
----
+Execute o script `full_schema_beattube_viewtube.sql` inteiro em um banco Azure SQL novo e vazio (Query Editor do portal Azure, Azure Data Studio ou `sqlcmd`).
 
-## Como rodar (ViewTube e BeatTube seguem o mesmo processo)
+### 2. ViewTube
 
-### 1. Extrair o ZIP
-
-Extraia em algum lugar fácil, como `C:\ViewTube` ou `C:\BeatTube`.
-
-### 2. Abrir o terminal na pasta do projeto
-
-Abra a pasta `viewtube` (ou `beattube`) no Explorer, clique na barra de endereço, digite `cmd` e pressione Enter.
-
-Ou no VS Code, abra a pasta e use o terminal integrado com `Ctrl + '`.
-
-### 3. Criar o ambiente virtual
-
-```
-python -m venv venv
+```bash
+cd ViewTube
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # preencha DB_*, AZURE_STORAGE_*, GOOGLE_*, RECAPTCHA_*, MAIL_*
+python run.py          # roda em http://localhost:5001
 ```
 
-### 4. Ativar o ambiente virtual
+### 3. BeatTube
 
-```
-venv\Scripts\activate
-```
-
-O terminal vai mostrar `(venv)` no início quando ativado corretamente.
-
-### 5. Instalar as dependências
-
-```
-python -m pip install -r requirements.txt
+```bash
+cd BeatTube
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # preencha DB_*, GOOGLE_*, RECAPTCHA_*, MAIL_*
+python run.py          # roda em http://localhost:5000
 ```
 
-Instale também os pacotes adicionais:
+### Variáveis de ambiente principais
 
-```
-pip install pillow
-pip install azure-storage-blob
-```
-
-### 6. Configurar o .env
-
-Dentro da pasta do projeto tem um arquivo `.env.example`. Copie ele e renomeie a cópia para `.env` (sem o `.example`):
-
-```
-copy .env.example .env
-```
-
-Abra o `.env` com o Bloco de Notas e preencha com as credenciais do Azure SQL, Azure Blob Storage e Google OAuth que serão fornecidas separadamente.
-
-O arquivo tem este formato:
-
-```
-SECRET_KEY=
-FLASK_ENV=development
-FLASK_DEBUG=1
-
-DB_SERVER=seu-servidor.database.windows.net
-DB_NAME=nome-do-banco
-DB_USER=seu-usuario
-DB_PASSWORD=sua-senha
-DB_DRIVER=ODBC Driver 18 for SQL Server
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-BASE_URL=http://localhost:5000
-
-# Apenas BeatTube:
-AZURE_STORAGE_CONNECTION_STRING=
-AZURE_CONTAINER_VIDEOS=videos
-AZURE_CONTAINER_THUMBNAILS=thumbnails
-```
-
-**Nunca suba o `.env` para o repositório.**
-
-### 7. Rodar
-
-```
-python run.py
-```
-
-Acesse no navegador: **http://localhost:5000** (ViewTube roda na porta 5001 se ambos estiverem ativos ao mesmo tempo)
-
----
-
-## Problemas comuns
-
-| Problema | Solução |
+| Variável | Descrição |
 |---|---|
-| `python` não reconhecido | Reinstale o Python marcando "Add to PATH" |
-| `pip` não reconhecido | Rode `python -m pip` no lugar de `pip` |
-| Erro de conexão com o banco | Confirme que o `.env` está preenchido corretamente e que o servidor Azure está acessível |
-| Erro no driver ODBC | Verifique se instalou o driver x64 corretamente |
-| Porta já em uso | Mude a porta no `run.py` ou encerre o processo que está usando |
+| `SECRET_KEY` | chave secreta do Flask |
+| `DB_SERVER`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_DRIVER` | conexão com o Azure SQL |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | OAuth do Google |
+| `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`, `RECAPTCHA_MIN_SCORE` | reCAPTCHA v3 |
+| `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USE_TLS`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_DEFAULT_SENDER` | envio de e-mail (código de verificação) |
+| `AZURE_STORAGE_CONNECTION_STRING`, `AZURE_CONTAINER_VIDEOS`, `AZURE_CONTAINER_THUMBNAILS` | armazenamento de mídia (ViewTube) |
+| `BASE_URL` | URL base usada nos redirects de OAuth |
 
----
+> Cada projeto tem seu próprio `.env`, mas `DB_SERVER`, `DB_USER` e `DB_PASSWORD` devem apontar para o mesmo servidor/banco para que o login compartilhado funcione corretamente.
 
-## Observações
+## Deploy
 
-O banco de dados fica em um servidor remoto no Azure, então todos que rodarem o projeto com as mesmas credenciais acessam os mesmos dados. Cada pessoa configura o `.env` localmente com as credenciais fornecidas — sem isso o projeto não conecta.
+Os projetos foram pensados para deploy em **Azure App Service**, com o `ViewTube` incluindo um arquivo `.deployment` configurando o build automático (`SCM_DO_BUILD_DURING_DEPLOYMENT=true`). Em produção, ambas as aplicações podem ser servidas via **Gunicorn**.
+
+## Conta única entre as plataformas
+
+Como `shared.users` é compartilhada entre BeatTube e ViewTube, o mesmo cadastro (e-mail/senha ou login Google) funciona em ambas as aplicações — incluindo o status de assinatura premium (`shared.user_subscriptions` / `shared.payments`), que é independente do domínio (vídeo ou música) consumido.
+
+## Participantes
+
+Projeto desenvolvido por:
+
+* Otavio Martins
+* Rafael Leite da Silva Francisco
+* Miguel Isaias Ledesma Araujo
+* Murilo Santos Barbosa
+* Pedro Henrique da Silva Bernardo
